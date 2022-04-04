@@ -1,0 +1,446 @@
+---
+title: "Introduction to R - Session 2"
+author: "Defra R Training Group"
+date: "Spring 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE}
+#setwd("~/shiny/R Training/Intro to R")
+```
+
+### Recap
+In the first session we covered reading in, manipulating and graphing some data. We mainly used base R functions, but we did introduce a function from an R package: tidyr::pivot_longer. This is because it was alot easier to use than the equivalent base R function (reshape).
+
+#### In this session we'll cover:
+* installing and loading more packages from the tidyverse to make our life easier
+* Reading in and saving different file formats 
+* Chains of data manipulation: piping  
+* Combining dataframes using joins
+* Plotting using the ggplot2 package
+
+## Recap about RStudio projects 
+We strongly advise working in RStudio projects when using R and we touched on things to avoid in Intro to R Session 1. Let's remind ourselves of the benefits of projects:
+
+* all code, data and outputs are in one place, you should rarely need to hard-code file locations unless you're working with shared data files;
+* this makes your work reproducible for future you and colleagues;
+
+Remember that projects are a RStudio thing, so if you're using R outside of RStudio then you can't make use of them.
+
+## Let's get started
+
+Presuming you were using RStudio Cloud for Session 1, just log into RStudio Cloud and click on the project you created there.
+
+## Install packages and start a new script
+
+![](packages.jpg)
+
+We need to install some new packages which we didn't install in session 1. Once they're installed they're available any time we come back to our project. In our script we then use the library command to load the packages we need for our current R session.
+
+We'll generally be using the tidyverse functions in this session, we'll compare them with their base R equivalents (where they exist). The tidyverse is a rare example of an enhancement which is both more powerful AND easier to use.
+
+When we introduce a function from a package, we'll use the notation `package::function` to remind us where the function comes from. This notation can also be used in an R script, some would argue it's always good practice as it avoids confusion caused when two loaded packages use different functions with the same name. Here we don't have that issue but it's something to be aware of.
+
+```{r, eval=FALSE}
+# These are just needed once for this project
+# Just type these commands into the R command line or into an empty script and then run it
+install.packages("ggplot2")
+install.packages("ggthemes")
+install.packages("readxl")
+install.packages("writexl")
+```
+
+Now create a new R script in RStudio (File|New File|R Script), and immediately save it with a sensible name (e.g. Defra Intro R Session 2). Type the rest of the commands into this script.
+
+```{r}
+# Libraries
+library(dplyr) # note no use of " " when using library command 
+library(readr)
+library(readxl)
+library(ggplot2)
+library(ggthemes)
+library(writexl)
+```
+
+We could install the tidyverse "meta-package" which includes dplyr, ggplot2 and a whole lot more, but generally it is better practice to install just what we need.
+
+
+## Reading in data 
+
+You can use different functions to read in data from different file types. 
+
+* note the need to include the different extensions in the filenames
+* note the 'skip' argument allows you to skip rows, in this case we don't need to skip any. 
+* Other useful arguments e.g. 'range' and 'trim_ws' are available.
+
+![](excel-and-csv.jpg)
+
+### Read in a csv file
+We will use the `readxl::read_csv()` function. The arguments are identical to calling base R read.csv(), but it's a different function. It's better for larger datasets and a bit more customisable. Remeber that we assign ('<-') the results to an R object, otherwise the data would be read in but lost. In passing, we're reminded of the choices on data types that read_csv made.
+
+We then use `dplyr::glimpse()`, this gives us a neat summary of the data and repeats the information on data types such as chr for characters and dbl for decimal numbers. Just calling arable_csv tells us this is a tibble (a special and handier form of data frame) with 36 rows and 5 columns. One advantage of a tibble is that R tries to be clever when it shows you its contents, it only prints the first 10 rows and it will show as many columns as your screen width allows and then summarises the rest underneath. This is generally OK so long as your most important data columns are at the start of your dataframe. 
+
+```{r}
+arable_csv <- read_csv("june_survey_data_clean.csv")
+glimpse(arable_csv)
+arable_csv
+```
+
+Question: from Session 1 do you remember other ways of viewing the contents of a dataframe? 
+
+### Read in .xls and read in .xlsx files
+The `readxl::read_excel()` function can be used to read in both .xls and .xlsx file types. This is our first example of a function where there is simply no way of achieving the same result in base R. 
+
+Note that we have specified which sheets in the workbook we want to read in, in this instance we didn't need this argument because there is only one sheet. We recommend using the sheet argument just in case someone adds new sheets to your spreadsheet. 
+Using View() on each of these tibbles will allow you to compare the two files in the viewer.
+```{r} 
+# read in .xlsx file
+arable <- read_excel("june_survey_data_clean.xlsx", sheet = "june_survey_data_clean")
+```
+
+`read_excel()` (and `writexl::write_excel()`) focus on the simplest cases that users will need for 95% of the time: reading and writing rectangular datasets. There are other more complex R packages for interacting with Excel, for example reading individual cells or ranges, or creating excel files with complex formatting.
+
+### Other file formats
+R can read a vast number of other file formats, and also link directly to databases. R packages to investigate include foreign and haven. See the [R data import manual](https://cran.r-project.org/doc/manuals/R-data.pdf) and the [cran task view on databases](https://cran.r-project.org/web/views/Databases.html)
+
+## Using pipes
+![](pipe.jpg)
+
+The pipe, `%>%` is a powerful tool for joining (or piping) together multiple operations. It allows you to perform several actions sequentially on a dataframe or tibble. Generally when using tidyverse packages it's automatically available to you. 
+
+__KEYBOARD SHORTCUT__ Ctrl and shift and m (press Ctrl and shift and m together). This will produce the pipe correctly for you and save typing time.
+
+ Placing a pipe between actions tells R to:
+Carryout action 1 (e.g. filter the data) %>% then take the result and do action 2 (e.g. create another column) %>% then take this result to action 3 (e.g. multiply values in the new column by values from another column) and so on. We could achieve all of this in base R, but it would involve applying functions to functions and the placement of brackets can get confusing, especially when learning R. 
+
+It's our opinion that piping is best practice for coding in R, we  recommend adopting the 'tidyverse' style of coding as part of your own workflow in R, and using tidyverse functions even when base R equivalents are available. This is mainly because it makes your code easier to read and debug - this helps you and anyone else using your code.
+
+You will start to see this in action as we work through the following.
+
+You can learn more about piping in R [here.](https://www.datacamp.com/community/tutorials/pipe-r-tutorial)
+
+### Filter arable to just the areas of wheat
+Here we're going to use the pipe operator to filter the arable dataset, creating a new dataset (arable_wheat). Interpret the code below as:
+Assign the following to arable_wheat; take arable then filter to return crops that are wheat.
+
+Note that when we testing if two things are equals we use the `==` double equals. This is different from single equals `=` which is used for setting arguments in functions, and assign `<-` - take the second object and put a copy into the first. This distinction can initially be confusing, especially if you've experience of other programming languages.
+
+```{r}
+arable_wheat <- arable %>% filter(Arable_crop == "wheat")
+```
+
+### Filter arable to just the areas of wheat then remove the first column
+Here we're doing the same again but this time using the pipe operator to also remove the first column called ...1. Use View(arable) to take a look before we do this. Assign the following to arable_wheat_clean; take arable then filter to return crops that are wheat then remove column named ...1 (read_excel gave this column a name because it didn't have one in the spreadsheet)
+
+Note that here we have broken up the sequence onto multiple lines. This is just to make things easier to read. 
+```{r}
+arable_wheat_clean <- arable %>%
+  filter(Arable_crop == "wheat") %>%
+  select(-...1)
+```
+
+You could also say
+
+```{r eval = FALSE}
+arable_wheat_clean <- arable %>%
+  filter(Arable_crop == "wheat") %>%
+  select(-1) # remove the first column
+```
+
+
+### Joining datasets to create a new dataset
+
+There are many different ways to join datasets in R, depending on what you are trying to achieve with your join. Base R has a function called merge which can achieve various types of join. However we're going to skip straight to the tidyverse - within the dplyr package there are a number of join functions that enable you to create a new dataset from the whole or parts of other datasets joined together. We are going to the left_join() function from the join family, type ?left_join in your R console and look at the  help file and you'll see the join choices available with some worked examples. You can read more about all of the types of join and how to use them  [here.](https://dplyr.tidyverse.org/reference/join.html)
+The [data wrangling cheatsheet](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) is also a useful to look at when choosing which join function to use.
+
+A left join takes all the values from the first table, and looks for matches in the second table based upon one or more a unique identifiers or keys that are common in both tables. If it finds a match, it joins the data from the second table to the first table. If no matches exist then R adds missing values labeled NA. The figure below shows two tables, A and B, the left_join() code to join them and the resulting table. Note that in this example the tables only share two colours in their id columns; red and yellow. The value 2 column is added to table A and the colour that shares a common id is placed in the correct row. Where there were no id matches then a blank cell results, in a real data example this would be NA. Can you think how this example might look different if we called right_join(A, B, by = "id")? 
+
+![How left_join works](left-join.jpg)
+
+__Creating a new dataframe__
+Here we are creating a new dataframe which we will combine with our arable dataframe. Usually you would import a dataset into a dataframe from a file but for this example we will create a small one ourselves.
+```{r}
+prices <- data.frame("Arable_crop" = c("wheat", "barley"), "Price" = c(3,5))
+```
+
+__Combine the new prices dataframe with the arable dataframe using the left_join() function__
+```{r}
+arable_inc_prices <- left_join(arable, prices, by = "Arable_crop")
+# Note that in this case the by = argument is note technically necessary but it is good practice
+#Or using the pipe operator to achieve the same result
+arable_inc_prices_piped <- arable %>% 
+  left_join(prices, by = "Arable_crop")
+#compare the two dataframes
+#That pesky ...1 column is still in there, can you extend the code to include a pipe and a select() function?
+```
+
+## Data types
+
+R has a wide variety of data types including scalars, vectors (numerical, character, date, date+time, logical, factor) and matrices. It then has compound objects, for example data frames are rectangular and like a matrix but each column has a name and can be a specific data type. Lists are a very flexible container for data (actually data frames are a special type of list). Finally outside of the base R world, there are more types, as we've seen tibbles are an enhancement of data frames which come from the tidyverse. 
+
+R will automatically set data types when you read data into R, however, sometimes you may need to change this depending on your analysis.
+Data types determine how the data is stored in your computer and how analysis/visualization will treat variables. You can read more about data types in R [here.](https://www.statmethods.net/input/datatypes.html)
+
+### Checking data types
+Look at the structure of the dataframe currently using the glimpse() function. 
+```{r}
+glimpse(arable_inc_prices)
+```
+
+Look at how the AreaM column prints, numbers so nothing unusual there.
+```{r}
+arable_inc_prices$AreaM
+```
+Now convert to type character and see how it prints. Note the difference, mainly quotes around the numbers, they are no longer numbers so you cannot do any mathematics with them such as summing the values. Try it, errors are often useful and informative.
+
+```{r}
+arable_inc_prices <- arable_inc_prices %>%  
+  mutate(AreaM = as.character(arable_inc_prices$AreaM))
+arable_inc_prices$AreaM
+
+```
+```{r eval = FALSE}
+sum(arable_inc_prices$AreaM)
+```
+
+Column type also affects how a column is sorted.
+
+Convert back to numeric, sum again and also estimate the mean AreaM. 
+
+Here we introduce a new function `dplyr::mutate()`
+```{r}
+arable_inc_prices <- arable_inc_prices %>%  
+  mutate(AreaM = as.numeric(arable_inc_prices$AreaM))
+
+sum(arable_inc_prices$AreaM)
+mean(arable_inc_prices$AreaM)
+```
+
+## IF statements
+
+If statements can be very useful. Often, you want to make choices and take action dependent on a certain value.
+
+![if statement operation](r-if.jpg)
+
+The syntax of the R if statement is:
+```{r, eval= FALSE}
+if (test_expression) {
+statement
+}
+```
+If the test_expression is TRUE, the statement gets executed. But if it is FALSE, nothing happens. Run the code as is with x = 5. Then make x = -5 and see what happens; nothing is returned so not very useful as it stands. 
+```{r}
+x <- 5
+if(x > 0){
+print("Positive number")
+}
+```
+### IF else
+
+The if...else statement is often more useful. 
+
+![if statement operation](if-else.jpg)
+
+The syntax of if…else statement is:
+
+```{r, eval = FALSE}
+if (test_expression) {
+statement1
+} else {
+statement2
+}
+```
+The else part is only evaluated when the if test_expression is FALSE.
+
+```{r}
+x <- -5
+
+if ( x > 0) {
+print("Positive number")
+} else {
+print("Negative number")
+}
+```
+Note: that else must be in the same line as the closing braces of the if statement.
+
+### Using ifelse on our arable_inc_prices dataframe
+
+Here we combine a dplyr pipe with the `ifelse()` function, which is a handy short version of `if(){}else{}`. 
+
+```{r}
+arable_inc_prices <- arable_inc_prices %>% mutate(after_2012 = ifelse(Year > 2012, TRUE, FALSE))
+```
+
+Question: could you write this in base R? 
+
+```{r eval = FALSE}
+arable_inc_prices$after_2012 <- ifelse(Arable$inc_prices$Year > 2012, TRUE, FALSE))
+```
+
+### Summary of data manipulation
+
+In the last simple example it's debatable whether the pipe + `dplyr::mutate` sequence is any better / easier. But for more complex sequences of manipulation, pipe + dplyr is generally simpler and more powerful. It also translates seamlessly to the situation where your data are in a database, there is a close relationship between dplyr pipes and underlying SQL code.
+
+We introduced the dplyr verbs:
+
+* `filter` for selecting rows based on one or more conditions
+* `select` for choosing columns by name - keep this or remove that
+* `mutate` for creating new columns (or editing an existing column) based on some criteria.
+
+The last of the main dplyr verbs is `arrange` for sorting data. There's alot more to dplyr which we'll try to cover in future courses.
+
+## Exporting dataframes
+Exporting data in R is as easy as importing and you have a wide range of file type options available ranging from the common to exotic. Here we focus on the common file types that most people will deal with on a regular basis.
+
+### Exporting to a csv file
+When we imported data we used a function called `read_csv()`. To export we use the `readr::write_csv()` function where the first argument is the name of the dataframe to export followed by file = "file name.csv". You need the .csv suffix.
+Note that for training purposes we are exporting our files to the local file area of our project. You can just as easily export to another location that R can access such as a folder on your PC or a network folder.
+```{r, eval=FALSE}
+write_csv(arable_inc_prices, file = "arable_inc_prices.csv") #need to include .csv
+```
+
+### Exporting to an Excel file
+Exporting to Excel is no trickier than exporting to csv. Note that you use `writexl::write_xlsx()`, annoyingly the second argument is path = instead of file = used in `write_csv()` and you need the .xlsx suffix if you want to do anything with the file afterwards.
+```{r}
+write_xlsx(arable_inc_prices, path = "arable_inc_prices.xlsx") # need to include .xlsx
+```
+
+## Making graphs
+One of the many great things about R, and one of it's early identified strengths are its graphical capabilities. These continue to grow as developers release new and updated plotting and also mapping packages and the sky is the limit when it comes to design and level of user interactivity. For now we will focus on the ggplot2 package.
+
+
+### ggplot2
+
+ggplot2 is a package dedicated to data visualization and allows you to build almost any type of chart. It can greatly improve the quality and aesthetics of your graphics, and will make you much more efficient in creating them. The way that ggplot2 works is based on the concept of the Grammar of Graphics by Leland Wilkinson (1999), that's what the gg stands for.
+
+Note that the package is called ggplot2, but the most commonly used command in the package is ggplot - ie `ggplot2::ggplot()`
+
+### Basic line graph 
+
+Here we are creating a plot object called arable_p. We take the arable dataframe and pipe this to ggplot(). Within that function we set the "aesthetics" that we want to map aspects of our data on to, in this case Year on the x-axis and AreaM on the y-axis. We also want to map the crop type (Arable_crop) to a colour aesthetic, that is to use colour to represent each crop type. We also want to show the relationship between Year and AreaM as a line by using the `geom_line()` function.. 
+
+```{r}
+arable_p <- arable %>%
+  ggplot(aes(x = Year, y = AreaM,  colour = Arable_crop)) + 
+  geom_line() 
+arable_p # take a look
+```
+
+We separate constructing the plot and assigning it to an object from actually viewing it. In the above case on its own that's not really necessary, but we are going to modify the plot object in a minute.
+
+ggplot() is used to construct the initial plot object, and is almost always followed by + to add other components to the plot in layers. What will the plot look like if you change `geom_line()` to `geom_point()`? Try it!
+
+arable_p is an example of a complex R list object. Have a look at what it contains. There are multiple nested levels of information, together containing everything necessary to describe the plot.
+
+```{r, eval = FALSE}
+str(arable_p)
+```
+
+That was just to give you a feel for what's going on underneath, you will probably never need to investigate these sorts of complex R objects. But the concept of an R object going way beyond simple data structures is what makes R so powerful even though much of the complexity is hidden.
+
+### Change axis labels, axis range and colours 
+
+We take the arable_p object and change the colour palette then label our axes and also change the y-axis range. 
+
+NOTE this is a rare example where the English "internationalisation" hasn't quite worked: in most cases where there is a word used in R that is spelled differently in American English then both spellings work the same. However here for some reason it's colorblind not colourblind.
+
+```{r}
+arable_p2 <- arable_p +
+  scale_colour_colorblind() + # this comes from the ggthemes package
+  xlab("Year") + 
+  ylab("Area (million ha)") + # many different ways to change axis labels
+  expand_limits(y=c(0,2.3)) # change axis range from default, 0 - 2.3 million ha
+arable_p2 # take a look
+```
+
+### Themes
+
+Themes allow you to control the non-data elements of your ggplot. The theme system does not affect how the data is rendered by geoms, or how it is transformed by scales. Themes help you make the plot look nicer or match an existing style guide. 
+
+There are alot of themes available, and you can even create your own or modify an existing one. Here just we're going to apply the theme_minimal which will remove the grey background. 
+
+```{r}
+arable_p3 <- arable_p2 + theme_minimal()
+arable_p3
+```
+
+Finally we also remove the gridlines.  
+
+```{r}
+arable_p4 <- arable_p3 + theme(
+        panel.grid.major.x = element_blank(), # remove major gridlines on the x axis 
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank() # remove minor gridlines on the x axis
+)
+arable_p4
+```
+
+### Axes and full plot together
+
+We've built the plots up in stages, creating a new R plot object each time, however this was just to illustrate the process, we could have put all the commands together without any intermediate plot objects.
+
+We will also want to make our x axis whole numbers by calling year a factor within the ggplot code. we've added a title, tidied the x-axis and removed unwanted ink to make the plot clearer to the reader. Instead of using the default rotated y-axis title we've made use of the subtitle label for this - this is good data visualisation practice. We've manually set the title of the legend to remove the annoying underscore (_) which was just the name of the column name in the data frame (r objects can't generally have spaces in their names). This is pretty much a publishable quality plot.
+
+```{r}
+arable_final <- ggplot(arable, aes(x = factor(Year), group = Arable_crop, y = AreaM, colour = Arable_crop)) + 
+  geom_line() +
+    scale_colour_colorblind(name = "Arable crop") +
+  labs(title="Crop areas in the UK 2008-2019",
+       subtitle = "Area (million ha)") +
+  xlab("") + ylab("")+ # make axis labels blank 
+  expand_limits(y=c(0,2.3))+ scale_x_discrete(breaks = seq(2008, 2019, by = 2))+
+  theme_minimal() +
+  theme(text = element_text(colour = "black"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank())
+
+arable_final
+```
+
+### Exporting a ggplot graph
+
+A simple way to export any graphic is by point and click in RStudio. Click on Export in the Plot viewer pane and you can either copy the graph to the clipboard or save it as an image file. 
+
+![](R_plot_export.jpg)
+
+But for reproducibility it's probably better to save your graphic as a file directly from your R script. It is better to think proactively about the size you would like your final image to be, as this affects the text size in your plot.
+
+```{r, eval=FALSE}
+ggsave(filename = "arable_final_plot.png", plot = arable_final, width = 15, height = 12, unit = "cm")
+# if don't specify width, height and unit will save in proportions of the plots window in the bottom right
+```
+
+# Help
+
+For general help: 
+
+* [R Cookbook](http://www.cookbook-r.com/)
+* [R Cheatsheets](https://www.rstudio.com/resources/cheatsheets/)
+* [Quick-R](https://www.statmethods.net/index.html)
+* [R4 Data Science](https://stat545.com/)
+* [Advice on using R](http://r-posts.com/advice-to-young-and-old-programmers-a-conversation-with-hadley-wickham/)
+
+For data organisation in spreadsheets [here.](https://peerj.com/preprints/3183.pdf)
+
+For graphs:
+
+* [ggplot2 book](https://ggplot2-book.org/index.html)
+* [R Cookbook](http://www.cookbook-r.com/Graphs/) 
+* [BBC R Cookbook](https://bbc.github.io/rcookbook/)
+
+Defra R community:
+
+* [Defra Data Science Yammer](https://www.yammer.com/defra.onmicrosoft.com/#/threads/inGroup?type=in_group&feedId=16126135)
+* Defra Coffee and Coding [does this still exist???]
+* R Training Group
+
+Wider online community 
+
+* Google!
+* [Gov Data Science slack workspace](govdatascience.slack.com) #r channel
+* [Stack overflow](https://stackoverflow.com/)
