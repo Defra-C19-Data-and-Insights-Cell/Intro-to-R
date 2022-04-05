@@ -12,26 +12,23 @@
 
 ### ~~~~~~ 1.1 - Load data and packages ~~~~~~ ####
 
-## Load packages
+## install packages
 install.packages("readr")
 install.packages("dplyr")
 install.packages("tidyverse")
 install.packages("janitor")
 
-### this is the same as... 
+### which we can also do in a list
 install.packages(c("readr", "dplyr", "tidyr"))
 
 ## Load packages into your environment
 library(readr)
 library(tidyverse)
 
-
-## Set wd to where data is stored then load
-setwd("/cloud/project/data/")
-
 ## Load in data using readxl::read_xlsx().
 ## Remember, if your data is in other formats such as .csv we can use other packages, for example readr::read_csv
 ESG_data <- readxl::read_xlsx("./ESG_data.xslx")
+
 
 ## Use janitor::clean_names to clean up our column names in our dataset, this should be a standard process
 ESG_data <- janitor::clean_names(ESG_data)
@@ -46,22 +43,37 @@ ESG_data
 ## Look at the top 5 rows
 head(ESG_data, 5)
 
+## Look at the top 20 rows
+head(ESG_data, 20)
+
 ## Open data in a new window (xl spreadsheet like)
 View(ESG_data)
 
-## Shows a column wide view of data
+## Shows a column wide view of data, notice the namespace loading the glimpse function from the pillar package
 pillar::glimpse(ESG_data)
 
 ## Show column names in the order they appear in your data
 colnames(ESG_data)
 
-## Want to tidy the column names 
+## If we want to view or select a particular column of a dataset we can use the $ operator to view that column.
+ESG_data$country_name
+
+## Another useful function is unique() which shows us unique values from columns
+unique(ESG_data$country_name)
 
 
 ####~~~~~~~~~~~~~~~~~~~~~ WRANGLING DATA ~~~~~~~~~~~~~~~~~~~~~~~~####
 ### Getting data into a "tidy" format
 
 ### ~~~~~~ 1.3 - Deleting Rows and Columns ~~~~~~ ####
+
+## Firstly we are going to standardise our column names using a function from the `janitor` package called `clean_names`. This converts all of our column names to lower case and any spaces to "_".
+
+colnames(ESG_data) ## before
+
+ESG_data <- janitor::clean_names(ESG_data) 
+
+colnames(ESG_data) ## after
 
 ## delete rows
 ESG_data_cleaning <- ESG_data[-1,] #square bracket = [row, column]
@@ -82,16 +94,20 @@ ESG_data_cleaning <- ESG_data[-c(1:67), -4]
 ### Indicators = 	Forest area (% of land area).
 
 ## Filter country column first, call this variable ESG_filtered using the original data
-ESG_filtered <- dplyr::filter(ESG_data, country_name == "United Kingdom" | country_name == "Netherlands")
+ESG_filtered <- dplyr::filter(ESG_data, country_name == "United Kingdom" | country_name == "Netherlands") ## like in excel we can use the OR operator.
 unique(ESG_filtered$country_name)
 
 ## Filter indicator column overwriting our previous ESG_filtered
-ESG_filtered <- dplyr::filter(ESG_filtered, indicator_name == "Forest area (% of land area)")
+ESG_filtered <- dplyr::filter(ESG_filtered, indicator_name == "Forest area (% of land area)") ## to write equals we use ==
 unique(ESG_filtered$indicator_name)
 
 ## Now if we look at our column names there are two columns that we aren't interested in, I know this from experience of the data...
-## There is a "x67" column and a "x2050" which aren't useful to us in this dataset, so we will get rid of them
+colnames(ESG_filtered)
+
+## There is a "x67" column and a "x2050" which aren't useful to us in this dataset, so we will get rid of them. We will use -c here to denote we want to select everything BUT the columns listed.
+
 ESG_filtered <- dplyr::select(ESG_filtered, -c(x2050, x67))
+
 colnames(ESG_filtered)
 
 ### ~~~~~~ 1.4 - PIVOT DATA ~~~~~~ ####

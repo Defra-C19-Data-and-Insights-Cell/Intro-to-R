@@ -23,7 +23,7 @@ library(magrittr)
 ## Lets experiment with the %>% operator
 ## %>% effectively means "then do this to that object"
 ## Try with loading data and clean_names()
-ESG_data <- readxl::read_xlsx("./ESGData.xslx") %>% # take the arable data set, then do...
+ESG_data <- readxl::read_xlsx("./ESG_data.xslx") %>% # take the arable data set, then do...
   janitor::clean_names() 
 
 ## Tidy the ESG data - clean names > filter for Indonesia and Loas > filter for "Agriculture, forestry, and fishing, value added (% of GDP)"

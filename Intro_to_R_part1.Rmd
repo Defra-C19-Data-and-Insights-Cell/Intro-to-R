@@ -1,11 +1,12 @@
 ---
 title: "Introduction to R - Session 1"
 author: "Defra R Training Group"
-date: "Spring 2021"
+date: "Spring 2022"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
+
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -14,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 * Installing and using R Packages
 * Reading in and filtering data
 * Reformatting data and basic data cleaning
-* Basic graphs
+* An introduction to next session
 
 ## Why learn R?
 * Makes you think in terms of a workflow which is
@@ -26,19 +27,18 @@ knitr::opts_chunk$set(echo = TRUE)
 * Web apps (shiny) and automated reporting (RMarkdown)
 * Helpful support community
 * Transferable skill for life
-* Productivity (although learning a new skill can lead to a productity dip!)
+* Productivity - reproducible and **automatable** pipelines can lead to more time being spent on other areas
 
-Also see https://fantasyfootballanalytics.net/2014/01/why-r-is-better-than-excel.html
 
 ## Preparing for the training session
 
-The session is run in a 'code-along' format, therefore **we recommend that you use a second screen if you have access to one** or a second device. This is because it will be easiest for you to see the teacher's screen and your own code at the same time. Additionally, you might find it helpful to have a print-out of the course materials (this html page).
+The session is run in a 'code-along' format, therefore **we recommend that you use a second screen if you have access to one** or a second device. This is because it will be easiest for you to see the teacher's screen and your own code at the same time.
 
-You do not need to have R and R Studio installed on your computer. For the purposes of the training session we use RStudio cloud because all you need is a browser (we recommend Google Chrome or Microsoft Edge, definitely not Internet Explorer) so there is nothing to configure and no dedicated hardware, installation or annual purchase contract required. 
+You do not need to have R and R Studio installed on your computer. For the purposes of the training session we use RStudio cloud because all you need is a browser (we recommend Google Chrome or Microsoft Edge, definitely not Internet Explorer) so there is nothing to configure and no dedicated hardware, installation or annual purchase contract required. We will detail how to get R installed on your computer within Defra at the end of session 2.
 
 You can sign up for a free "Cloud Free" account that allows you to create up to 15 projects, and use up to 15 project hours per month.
 
-You can also run the training materials on an up to date local installation of R/RStudio, but there may be a few minor differences - the instructions below assume you're using RStudio cloud.
+You can also run the training materials on an up to date local installation of R/RStudio (data is not offsen and is publically available or example data so you could also use your own personal machine), but there may be a few minor differences - the instructions below assume you're using RStudio cloud. 
 
 When you're working through the materials, we recommend that you type the commands rather than using cut-paste.
 
@@ -50,7 +50,6 @@ When you're working through the materials, we recommend that you type the comman
 
 **3) Created a new project by clicking on the 'New Project' button, and given your project a name**
 
-<!-- ![R Studio Cloud Projects](Cloud_projects.JPG) -->
 
 Note that in RStudio Cloud you must work in a project. 
 
@@ -64,28 +63,29 @@ Likewise previous R users may have come across the attach() function. Again you 
 
 ## What is R & R Studio?
 
-<!-- ![](r_rstudio.jpg) -->
+![](images_markdown/r_rstudio.png)
 
 #### What is R?
 R is a computer language and environment for data manipulation, data analysis and graphical display. 
-Importantly R is a free, open source software which means it is accessible to all and is continually  improving. Although there are other computer languages, notably Python, used in data science, we recommend R for data science unless you've already had some exposure to Python and are comfortable with it.
+Importantly R is a free, open source software which means it is accessible to all and is continually  improving. There are other computer languages, notably Python, used in data science, but R is most widely used. Certaintly within Defra the majority of data scientist/analysts will be using R. For more information on R vs Python you can see this article on [towards datascience.](https://towardsdatascience.com/python-vs-r-for-data-science-cf2699dfff4b)
 
 #### What is RStudio?
-RStudio is an integrated development environment (IDE) for R. Basically it makes using R alot easier. It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, debugging and workspace management. RStudio is available in open source and commercial editions and runs on the desktop (Windows, Mac, and Linux) or in a browser connected to RStudio Server or RStudio Server Pro. Rstudio is developed and maintained by the US company RStudio, and is a good example of how commercial companies can make a business from open source software. 
+RStudio is an integrated development environment (IDE) for R. It is a user interface for the R programming language making writing and running code much easier and more intuative, as well as providing a host of addins to make your working life easier including: a console, syntax-highlighting editor that supports direct code execution, tools for plotting, history, debugging and workspace management. 
 
-<!-- ![](rstudio_session_4pane_layout.jpg) -->
+RStudio is available in open source and commercial editions and runs on the desktop (Windows, Mac, and Linux) or in a browser connected to RStudio Server or RStudio Server Pro. 
+![](images_markdown/rstudio_session_4pane_layout.png)
 
 ## Getting the training data into RStudio Cloud
 
 Once you have the zip file of training materials, start up RStudio Cloud and go to your new project that you created above. In the bottom right window, under the Files tab, you'll see a button called Upload. Click on that, and follow the instructions to upload your zipped file. RStudio will automatically unzip the files and place them in your project. This includes the training documents themselves, which don't need to be available to R, but it's no harm to have them there. 
 
-<!-- ![](upload_button.png) -->
+![](images_markdown/r_upload.png)
 
 ## Getting set up
-Although we can type R commands into the console window (bottom left), it's better to type commands into a script which we can save for future use. From a script we can run an individual line of code, a block of code or the entire script.
+Although we can type R commands into the console window (bottom left - useful for quick code snippets which we don't want to save), it's better to type commands into a script which we can save for future use. From a script we can run an individual line of code, a block of code or the entire script.
 
 To set up a new blank script, click on the little plus sign in the top left of your screen underneath File.
-<!-- ![](file_pane.JPG) -->
+![](images_markdown/r_new_script.png)
 
 It's good practice to put a name, a date and author in scripts.
 
@@ -98,9 +98,25 @@ You can use # to add notes throughout your script, the # means R knows not to tr
 
 **Note: all code in this session is shown in a grey box as above.**
 
-## Packages
+## Functions and packages
 
-R packages are collections of functions and data sets developed by the community. R Packages are available for download from repositories. The official, and virtually only repository you'll ever need, is CRAN. The R foundation coordinates it, and for a package to be published here, it needs to pass several tests that ensure the package is following CRAN policies. Although you or your organization might have a local repository, typically they are online and accessible to everyone. Some packages, especially those in development, are not on CRAN and are only available from github.
+The way that we use R is to write code which utilises functions - functions being actions that we do to an piece of data, or object in R. But where do the functions come from? Packages. 
+
+R Packages are collections of functions written and tested and published to an online storage website (repository), the official repository being CRAN. For a package to be published here, it needs to pass several tests that ensure the package is following CRAN policies.
+
+## Types of R programming
+
+When you install R onto your computer you are using something called Base R. This is a version of R without any add-ons. It contains many useful functions and an easy syntax to understand, however to increase the effectiveness of R we will want to use and install packages. 
+
+Due to R being Open Source many of the packages we can download and use have different ways of being used or written depending on authors preferences. For instance we may have to tell one function what column of a dataset to use first, then the data, and visa versa for another function from another package. This can make programming efficiently difficult. Additionally some packages may not work well with each other as functions from within packages may return an unexpected data type or data structure when transforming. 
+
+Most people who use R now are using a group of packages called [the tidyverse.](https://www.tidyverse.org/) 
+
+![](images_markdown/tidyverse_website.png)
+The tidyverse is a collection of packages which share common philosophies and are designed to work together. They were introduced to the world by Hadley Wickham (one of the biggest names in R) and mainly support a [tidy data](https://towardsdatascience.com/what-is-tidy-data-d58bb9ad2458) approach to working with data (more on that later). As the packages share syntax, philosophies and are designed to work together, they use making R alot easier and more initiative, and packages are updated frequently with new features meaning that analysts can stay up to date with best practices and emerging methods.
+
+During this introduction we will touch on Base R, but will mainly focus on using the tidyverse. On thing to take away from this is that there **is many different ways of doing the same thing in R**, here we choose to do things the "tidyverse" way. 
+
 
 ## Installing packages
 
@@ -109,30 +125,49 @@ The first time you use a package on your computer you need to install it. This g
 You can do this with the install.packages() function. Type this command into the console, not in your script, as you won't need to re-run it if you come back to your script another time.
 
 ``` {r, eval = FALSE}
-install.packages("tidyr") 
+install.packages("tidyverse") 
 ```
-**Note: to run a line of code in R you click the line of code you want to run, then press Ctrl+Enter or click the Run button.**
 
-Here we are only going to install one package called tidyr. Most of the time today we are going to use the functions built-in to R ("base R").
+Here we are only going to install a group of packages from called tidyverse. Most of the time today we are going to use the functions built-in to R ("base R").
 
 Note that when using RStudio Cloud, each separate project has its own package library, so if you create another project you will need to install your required packages from scratch. This is different from running R on your local computer (or in a virtual machine) where the default is a single package library available to any project. 
 
 ## Loading packages
 
-library() is the command used to load a package into a R session. At first the difference between installing a package with install.packages() and loading a package with library() can be confusing.
+library() is the command used to load a package into a R session. At first the difference between installing a package with install.packages() and loading a package with library() can be confusing. 
 
 > "a package is a like a book, a library is like a library; you use library() to check a package out of the library" - Hadley Wickham
  
 ``` {r, message = TRUE}
-library(tidyr) # we are back typing commands in your script now
+# For example we can load a package called ggplot2
+library("ggplot2") # we are back typing commands in your script now
+library("magrittr")
 # note no use of " " when using library command
+# We could now use functions from ggplot2 to plot data
 ```
+
+**Note: to run a line of code in R you click the line of code you want to run, then press Ctrl+Enter or click the Run button.**
+
+When we use ```{r} library()``` we load all of the functions within a package, however we can also load one function from an installed package using whats called "namespacing". Some users prefer this way of calling functions as it also identifies what package the function comes from, allowing easier interpretation of code.
+
+``` {r, message = TRUE, eval = FALSE}
+# namespace example
+ggplot2::ggplot()
+
+# or
+
+library("ggplot2")
+ggplot()
+
+# note - example uses empty functions 
+```
+
 
 ## Code not working?
 Common causes of error:
 
 * no "" when needed (and vice versa)
-* mispelling
+* misspelling
 * wrong number of ()
 * wrong case: pretty much everything in R is case sensitive
 
@@ -146,70 +181,195 @@ carefully examine all variables used in the command that triggered the warning.
 ### Errors
 Errors mean R cannot continue processing your commands and returns to the command prompt showing a brief description of the error.
 
-### Reading data into R
+## Session 1:
 
-Use the read.csv() function to read your data (stored in a csv file) into R. Here we read the data in the csv file into R and store it in a data frame called crops_data. A data frame is an R data structure, basically a rectangular matrix of data where each column is named. Each column can have a different data type, but unlike Excel, everything in a single column must have the same data type. Integer, decimal, character are the most common data types. The <- symbol is called the assignment operator or just assign, it's just the less than (<) character immediately followed by the minus sign (-). Note the spaces either side of <-, these are not essential but help readability. But there must NOT be a space between < and -. Likewise there must not be a space between read.csv and the open bracket.
+### Project Brief 
+
+We have been tasked to compare the performance of the ESG indicator, "Forest area (% of land area)" between the UK and Netherlands as part of a data exploration exercise.
+
+
+### Installing and loading packages, reading data into R.
+
+#### 1.1 Install and library packages
+As this is the first time we are using R we will need to install our packages. We do this by running the function `install.packages`.
+
+
+```{r, message = T, eval = FALSE}
+## install packages
+install.packages("tidyverse")
+install.packages("janitor")
+install.packages("readxl")
+install.packages("readr")
+```
+
+A quick side-note on using lists in R... We can pass lists to most functions to repeat that function for multiple things. We use the syntax `c()` to do this, where within `c()` we provide a list, like so `c(1,2,3,4,5)`. A good example of this is installing all the above packages using one line...
+
+```{r, message=F,eval=F}
+install.packages(c("tidyverse", "janitor", "readxl", "readr", "pillar")) ## and so on
+```
+
+#### Library packages
+
+> "a package is a like a book, a library is like a library; you use library() to check a package out of the library" - Hadley Wickham
+
+We need to library our packages in order to use their contents.
+
+```{r, message=T, eval=F}
+library(tidyverse)
+library(janitor) 
+library(readxl)
+library(readr)
+
+# note here that we cannot use the list c() operator with library, it must be done one at a time. 
+```
+
+
+Use the `read_xlsx` function from the `readxl` package to read your data (stored in a .xslx file) into R. 
+
+Here we read the data in the .xlsx file into R and store it as what we call an object, or data frame - we will name this ESG_data. 
+
+A data frame is an R data structure, basically a rectangular matrix of data where each column is named. Each column can have a different data type, but unlike Excel, everything in a single column must have the same data type. Integer, decimal, character are the most common data types. 
+
+The <- symbol is called the assignment operator or just assign, it's just the less than (<) character immediately followed by the minus sign (-). Note the spaces either side of <-, these are not essential but help readability. But there must NOT be a space between < and -. Likewise there must not be a space between read.csv and the open bracket.
 
 __KEYBOARD SHORTCUT__ Alt and - (press Alt and the minus sign together). This will produce the assigment operator correctly for you and save typing time.
 
-```{r}
-crops_data <- read.csv("june_survey_data.csv")
+```{r eval=T, message=TRUE}
+ESG_data <- readxl::read_xlsx("./ESG_data.xslx")
+ESG_data
 ```
 
-### Looking at your data
+
+### 1.2 Exploring your data
 
 There are various different ways to look at your data in R, try each of these and look at the differences between them. 
 
-```{r, eval = FALSE}
-crops_data
-View(crops_data) # or click in the Environment pane on the R object you would like to view
-str(crops_data)
+```{r, eval = F}
+
+## Just use the object name
+ESG_data
+
+## Look at the top 5 rows
+head(ESG_data, 5)
+
+## Look at the top 20 rows
+head(ESG_data, 20)
+
+## Open data in a new window (xl spreadsheet like)
+# View(ESG_data) 
+
+## Shows a column wide view of data, notice the namespace loading the glimpse function from the pillar package
+pillar::glimpse(ESG_data)
+
+## Show column names in the order they appear in your data
+colnames(ESG_data)
+
+## If we want to view or select a particular column of a dataset we can use the $ operator to view that column.
+ESG_data$`Country Name`
+
+## Another useful function is unique() which shows us unique values from columns
+unique(ESG_data$`Country Name`)
+
 ```
 
-You'll see that most of the columns are years, and that R has put a X in front of the year number. This is because R doesn't like variable names (including column names) to start with a number. Likewise R doesn't like most punctuation characters in variable names, for example brackets. For your own names it's best to stick to upper or lower case characters, numbers (but not at the beginning of the name), the underscore and dot characters (_ and .). With this dataset, we will sort out these issues later.
+When we load data into R it takes the column names in the raw data format. Usually for programming we want to standarise this as one of our first cleaning steps. When naming columns yourself it's best to stick to upper or lower case characters, numbers (but not at the beginning of the name), the underscore and dot characters (_ and .). With this dataset, we will sort out these issues later.
 
 
-## Data wrangling
+### Wrangling data
 
 Data wrangling is about getting your data in the right format to be able to analyse it. The next few steps take you through common data wrangling problems and how you can solve them in R. 
 
-#### Removing a row 
+#### 1.3 Deleting rows and columns 
 
-In this case, we don't need the totals on the first row. Using one of the ways above, look at your data after you've run the command. 
-```{r}
-crops <- crops_data[-1, ] # before comma = row
-```
-
-The -1 means remove row number 1. 
-
-#### Removing a column
-
-We also don't need the 1983 column (the 2nd column). Again, view your data afterwards.
+Firstly we are going to standardise our column names using a function from the `janitor` package called `clean_names`. This converts all of our column names to lower case and any spaces to "_".
 
 ```{r}
-crops <- crops[, -2] # after comma = column. It's good practice to put a space after the comma
+colnames(ESG_data) ## before
 ```
 
-#### Removing multiple rows
-Only select data we are interested in by retaining the first 10 rows at the beginning of the dataset
-```{r}
-crops <- crops[c(1:10),]
+```{r, eval = F}
+ESG_data <- janitor::clean_names(ESG_data) 
 ```
-
-There are other ways to select rows and columns. You can select a single column by name
 
 ```{r}
-crops$Crop # note the different display format when R is showing a single vector of data 
+colnames(ESG_data) ## after
 ```
 
-And combine selecting rows and columns, for example
-```{r}
-crops[1:5, c("Crop", "X1984")] # Note use of c("","") when selecting multiple columns 
+Now we can experiment with removing columns and rows. In base R we can do this using the `[]` format. A square bracket written directly after your data = [row, column]. For example I want to see the 2nd row and the 4th column of my data x I would do the following `x[2,4]`. We can remove values by putting a `-` before the reference. A blank space is ignored.
+
+```{r, eval = F}
+## delete rows
+ESG_data_cleaning <- ESG_data[-1, ] #square bracket = [row, column]
+ESG_data_cleaning # view the data and we can see the first total row is gone
+ESG_data_cleaning <- ESG_data[-c(1:67), ] #square bracket = [row, column]
+
+## delete cols
+ESG_data_cleaning <- ESG_data[ ,-4]
+ESG_data_cleaning # column 4 (indicator code) is deleted
+
+## remove cols and rows in one step
+ESG_data_cleaning <- ESG_data[-c(1:67), -4]
 ```
 
-It is best practice to select rows or columns by name, this can help avoid erroneous results if there are changes to the format of the data.
+This initial concept is useful to understand, but within the real world and also tidyverse we would ordinarily filter data rather than delete it, and use a function `dplyr::select` to select particular columns of interest (again rather than deleting them). 
 
-In R you can use either single or double quotes, but don't mix the two in the same line of code. It's best to stick to one or the other.
+
+Lets try selecting data we want using tidyverse. For this example we are interested in comparing two countries, and one particular indicators, so lets get the data we need to filter our dataset.
+Countries = United Kingdom and Netherlands.
+Indicators = 	Forest area (% of land area).
+
+> Note - It is best practice to select rows or columns by name, this can help avoid erroneous results if there are changes to the format of the data. This is one of the reasons why most prefer the tidyverse way of filtering and selecting data.
+
+**But first... a note on getting help.**
+
+`read_xlsx` was our first R function, but this is our first example of using an R function with multiple arguments (arguments are just anything within the brackets of the function name. Each argument other than the first is named, using the syntax argument = value. 
+We are going to be passing two arguments to `dplyr::filter`. Here is the completed code:
+```{r, eval = F}
+## Filter country column first, call this variable ESG_filtered using the original data
+ESG_filtered <- dplyr::filter(ESG_data, country_name == "United Kingdom" | country_name ==  "Netherlands") ## like in excel we can use the OR operator.
+unique(ESG_filtered$country_name)
+```
+
+* Firstly, `ESG_data` is the data frame we're working on. We've not named this argument by convention, but we could have said `data = ESG_data`.
+* Next using the `country_name == "United Kingdom"` argument we are saying that we want `country_name` only when it equals `United Kingdom`. 
+* Taking this a step further we are going to use the `|` operator to signify *or*. Therefore the full `dplyr::filter(ESG_data, country_name == "United Kingdom" | country_name == "Netherlands")` translates to *filter the ESG_data data frame where the column country_name is equal to the United Kingdom or Netherlands.
+
+Anyone using R, however experienced, is not going to remember the arguments of most of the functions they use. Fortunately it's easy to bring up a help page for any R function:
+
+```{r eval = FALSE}
+?dplyr::filter
+# or
+help(filter) # and select the dplyr option
+```
+
+You will see information appear in the "help" tab in the bottom right tab in R Studio. 
+
+![](images_markdown/r_help.png)
+
+Now, with the above in mind, lets filter our data.
+
+```{r , eval = F}
+## Filter country column first, call this variable ESG_filtered using the original data
+ESG_filtered <- dplyr::filter(ESG_data, country_name == "United Kingdom" | country_name == "Netherlands") ## like in excel we can use the OR operator.
+unique(ESG_filtered$country_name)
+
+## We are only interested in one indicator so lets filter the indicator column overwriting our previous ESG_filtered
+ESG_filtered <- dplyr::filter(ESG_filtered, indicator_name == "Forest area (% of land area)") ## to write equals we use ==
+unique(ESG_filtered$indicator_name)
+
+## Now if we look at our column names there are two columns that we aren't interested in...
+colnames(ESG_filtered)
+```
+
+There is a "x67" column and a "x2050" which aren't useful to us in this dataset, so we will get rid of them. We will use -c here to denote we want to select everything BUT the columns listed.
+
+```{r , eval = F}
+ESG_filtered <- dplyr::select(ESG_filtered, -c(x2050, x67))
+
+colnames(ESG_filtered)
+```
+
+We've kept our original data frame, ESG_data, and created a new intermediate data frame called ESG_filtered, in case anything goes wrong and we have to refer back to the original data without reloading the data again. 
 
 ## Tidy data
 
@@ -217,7 +377,7 @@ Making a dataset 'tidy' is part of the data wrangling process in R.
 
 Tidy data is a standard way of mapping the meaning of a dataset to its structure. A dataset is messy or tidy depending on how rows, columns and tables are matched up with observations, variables and types. 
 
-<!-- ![](tidy-1.jpg) -->
+![](images_markdown/tidy-1.png)
 
 There 3 main qualities of tidy data:
 
@@ -225,113 +385,122 @@ There 3 main qualities of tidy data:
 * Each observation forms a row
 * Each type of observational unit forms a table
 
-<!-- ![](tidy-9.jpg) -->
-
-We use the pivot_longer() function from the tidyr package here to make our data set tidy. We create a new data frame called arable. We've kept our original data frame called crops_data and our intermediate data frame called crops, in case anything goes wrong and we have to refer back to them. You'll see that the output of pivot_longer() is a "tibble" this is just a neat type of data frame. Don't worry about this for now, we'll look at tibbles some more in Session 2. 
-```{r}
-arable <- pivot_longer(crops, cols = -Crop, names_to = "Year", values_to = "Area") 
-# similar to copying and pasting using rows to columns in excel
-arable # take a look
-```
-
-read.csv was our first R function, but this is our first example of using an R function with multiple arguments (arguments are just anything within the brackets of the function name. Each argument other than the first is named, using the syntax argument = value. 
-We are passing four arguments to pivot_longer:
-
-* Firstly, crops is the data frame we're working on. We've not named this argument by convention, but we could have said data = crops.
-* Secondly using the cols = argument we are saying which columns of our data frame we want to transform. In this instance it's everything EXCEPT the Crop column so we say -Crop
-* Thirdly using names_to = argument we say what name will we give to the new column which will contain the information in the transformed columns (everything except Crop, ie X1984, X1985 etc)
-* Finally with the values = argument we set the name of the new column that will hold all the data from the transformed columns.  
-
-Anyone using R, however experienced, is not going to remember the arguments of most of the functions they use. Fortunately it's easy to bring up a help page for any R function:
-```{r eval = FALSE}
-?pivot_longer()
-```
-
-In this example we have used a function from a package. In many cases, packages add functionality that is simply not present in base R. This is one of many cases where we COULD have used a function in base R (in this case that's called reshape). However in this case we use pivot_longer because it's so much easier to use than reshape. We will come across other situations in Session 2 where we choose to use functions in packages rather than their base R equivalents.
-
 You can read more about tidy data [here.](https://r4ds.had.co.nz/tidy-data.html) and [here.](https://peerj.com/preprints/3183.pdf)
 
 Of course it's better if your data are tidy in the first place, but we often have to deal with "untidy" data!
 
-## Clean data
+### 1.4 Pivot Data
+
+We use the pivot_longer() function from the tidyr package here to make our data set tidy (our data is currently in a "wide" format, and therefore messy, so to clean it we can lengthen our data to ensure each column is a variable, each row is an observation, and each cell is a value).
+
+We are going to use a new way of telling R what columns to pivot. In our dataset we want to pivot all of the year columns, so we have told our function `pivot_longer` that `cols = c(x1960:x2019)`. We are using the `c()` operator to select all columns between `x1960` and `x2019` using the `:` operator. 
+
+```{r , eval = F}
+ESG_tidy <- tidyr::pivot_longer(ESG_filtered, cols = c(x1960:x2020), 
+                                names_to = "year", 
+                                values_to = "land_area")
+
+# similar to copying and pasting using rows to columns in excel
+ESG_tidy # take a look
+```
+
+We create a new data frame called ESG_tidy. You'll see that the output of pivot_longer() is a "tibble" this is just a neat type of data frame. Don't worry about this for now, just think of it as a type of dataframe. 
+
+In this example we have used a function from a package. In many cases, packages add functionality that is simply not present in base R. This is one of many cases where we COULD have used a function in base R (in this case that's called reshape). However in this case we use pivot_longer because it's so much easier to use than reshape. We will come across other situations in Session 2 where we choose to use functions in packages rather than their base R equivalents.
+
+
+
+### 1.5 Clean data
 
 Data cleaning is the process of preparing data for analysis by removing or modifying data that is incorrect, incomplete, irrelevant, duplicated, or improperly formatted data. 
 
+#### Remove NAs
+Actually we don't want the NAs at all, so we need to remove these but before doing that it's worth checking where the NAs are. Our first line of code does two things, reading from the inside the function is.na() returns a 1 if NA is found and 0 otherwise. The colSums() function is wrapped around is.na() and adds up the 1s so we can clearly see where the NAs occur. This is good practice because running the next line of code removes all NAs from the dataframe which in this instance is ok. In datasets with more columns you may have NAs in other columns but not on the same rows so applying na.omit() to a dataset may give unwelcome results. There are other functions that allow you to be more selective with handling NAs but that is outside this session.
+```{r , eval = F}
+colSums(is.na(ESG_tidy))
+ESG_clean <- na.omit(ESG_tidy)
+
+## being selective with our NA removal example
+ESG_clean <- dplyr::filter(ESG_tidy, is.na(ESG_tidy$land_area) == F) # we filter ESG_tidy$land_area where is.na returns false (i.e. it doesn't contain an NA value)
+
+```
+
 #### Removing unwanted characters
-Here we're using the function gsub() to remove unwanted characters from the dataset, these were either in the original dataset or were created when the read.csv function renamed the year columns to valid R object names. 
-The gsub() function performs character replacement in strings. Strings are a non-numerical type of R data, others include logical, integer and double but more on that later.
-Our gsub() code uses three arguments; 1st is the string pattern to replace wrapped in quotes, "X" in our case. 2nd is the replacement character or pattern in quotes, "" which is nothing in our case, we want to remove X. Finally we say what object we want to apply this to, the column arable$Year. The next line of code for removing "g" should be easier for you to interpret and follows the same logic. Finally, to remove all other unwanted punctuation we use gsub() again with a "regular expression" or regex. Do not worry about these yet, even for experienced R users regular expressions can be tricky but they are very powerful when dealing with text based datasets that you may encounter at some point. 
-```{r}
-arable$Year <- gsub("X", "", arable$Year) # removes the Xs
-arable$Year <- gsub("g", "", arable$Year) # removes the letter g
+If we take a look at the `year` column we just made by pivoting our data we will see that it contains "x" then a year. We want to remove the x to create a numeric year column. 
 
-arable$Year <- gsub("[[:punct:]]", "", arable$Year) # [[:punct:]] removes all punctuation
+We can focus our removing of the "x" values by using a function from the package `stringr::str_remove`. This uses the sytax of "string" (where do you want to remove a pattern from), and "pattern" (what do you want to remove).
 
+```{r , eval = F}
+ESG_clean$year
+```
+```{r , eval = F}
+stringr::str_remove(ESG_clean$year, "x")
 ```
 
-#### Removing spaces
+Given that we know the `year` column only wants to be numbers we could do a more general cleaning incase any spaces or other characters have crept in, we can do this using a bit of "regular expression" (regex) and another function from the `stringr` package, `stringr::str_extract` to extract all the numeric characters from the column, removing everything else.
 
-Because of the format of the original data, there are spaces in the numbers in the area column. We remove those. NOTE THE SPACE BETWEEN QUOTES IN THE FIRST ARGUMENT.
-```{r}
-arable$Area <- gsub(" ", "", arable$Area) # removes spaces
+```{r , eval = F}
+ESG_clean$year <- stringr::str_extract(ESG_clean$year, "[[:digit:]]*$")
+ESG_clean
 ```
 
-#### Replacing values in data
-There are two sets of entries for 2009, one called 2009 and one called revised. First we remove the "old" 2009 data using the subset function In this case we just over-write the arable data frame. Then we rename every occurrence of "revised" to 2009.  
-```{r}
-arable <- subset(arable, Year != 2009) # filter out 2009 as it has been revised (two 2009 columns)
-arable$Year[arable$Year == "revised"] <- 2009 # replacing the occurrences of "revised"with "2009" 
-```
+This function again uses the same syntax as the `stringr::str_remove` but instead of a pattern to remove, we are giving it a pattern to keep. The pattern in this case translates to: all digits (`[[:digit:]]*`) until the end of the string `$`.
 
+Don't worry about regular expressions/regex yet though, even for experienced R users regular expressions can be tricky but they are very powerful when dealing with text based datasets that you may encounter at some point. The above example is a simple introduction to what we can do with regex. 
 
 #### Data types
 
-R has a wide variety of data types including scalars (a single piece of data), vectors - a series of bits of data of the same type (numerical, character, logical), matrices, data frames, and lists. 
+R has a wide variety of data types including scalars (a single piece of data), vectors - a series of data of the same type (numerical, character, logical), matrices, data frames, and lists. 
 
-R will automatically set data types when you read text files into R, however, sometimes R will not do what you want so you may need to change.
+R will automatically set data types when you read files into R, however, sometimes R will not do what you want so you may need to change.
 Data types determine how the data is stored in your computer and how analysis/visualization will treat variables. You can read more about data types in R [here.](https://www.statmethods.net/input/datatypes.html)
 
-Change variable data types, from character (text) to numeric. In the original dataset, there were some blank entries which were stored as ".." - these are why the values were imported as character rather than numeric in the first place. When we change Area to numeric, these will be specifically flagged as missing values with the special value NA, and you'll get a message from R that it's done this. Unlike Excel, R is good at handling missing data.  
-```{r}
-arable$Year <- as.integer(arable$Year) # Make year an integer
-arable$Area <- as.numeric(arable$Area) # Make area numeric
+Change variable data types, from character (text) to numeric. Once we pivoted our earlier dataset we created a year column which contained (before we cleaned it) and `x` and then a number like `1993`. is we run our dataframe we can see the datatype of the year column in character, the character strings which were there are why the column was labelled as a character rather than numeric. 
+
+Sometimes when we change a character column to numeric any cells containing characters will be flagged as NA, and you'll get a message from R that it's done this. This is why (in this case) we want to remove characters before changing the data type. In other cases we might be fine with just changing the datatype and ignoring the NA values, it all depends on what data you are using and the purpose. 
+
+Let's give this a try...
+
+```{r , eval = F}
+ESG_clean$year <- as.numeric(ESG_clean$year) # Make year an integer
+ESG_clean$land_area <- as.numeric(ESG_clean$land_area) # Make area numeric
 ```
 
-#### Remove NAs
-Actually we don't want the NAs at all, so we need to remove these but before doing that it's worth checking where the NAs are. Our first line of code does two things, reading from the inside the function is.na() returns a 1 if NA is found and 0 otherwise. The colSums() function is wrapped around is.na() and adds up the 1s so we can clearly see where the NAs occur. This is good practice because running the next line of code removes all NAs from the dataframe which in this instance is ok. In datasets with more columns you may have NAs in other columns but not on the same rows so applying na.omit() to a dataset may give unwelcome results. There are other functions that allow you to be more selective with handling NAs but that is outside this session.
-```{r}
-colSums(is.na(arable))
-arable <- na.omit(arable)
+
+And with all the above steps done we should have a nice clean dataset with which we are ready to work on some analysis and visualisation.
+
+```{r , eval = F}
+ESG_clean
 ```
 
-#### Subsetting  
-For the rest of our analysis we only want data since 2008. Here we create a new data frame called arable_sub. This is achieved by using "logical operators" such as >(greater than), <(less than), <=(less than or equal to), == (equal to), != (not equal to). It is worth remembering these operators, and learning others, as you work with R.
-```{r}
-arable_sub <- subset(arable, Year >= 2008) # similarly can use these: >, <, <=, ==, !=
-```
+### Summary of learning
 
-#### Filtering for multiples values or categories
-```{r}
-crop_list <- c("wheat", "barley", "oilseed rape")
-arable_sub <- subset(arable_sub, Crop %in% crop_list)
-```
+Through this session we have explored (at a very high level)..
+* What R is and why we would use it
 
-subset() is a base R function so doesn't require any additional packages. In session 2 we will introduce the filter() function which  is part of dplyr in the tidyverse set of packages. Filter works quicker in big datasets and can operate on SQL databases without pulling the data in R's memory. There are a few other technical differences which we won't go into here. 
-The %in% operator is another good one to memorise, used with subset() or filter() you are telling R that you only want crops that are in your list. 
 
-## Basic graphs
-We're going to finish off this first session by making a very basic graph using base R commands. We'll produce some better graphs in Session 2. 
+## End of Session 1!
 
-Note that we're using the plot function which has multiple arguments, and that we're splitting it over multiple lines for readability. This is OK, if you don't run the code up to the last closed bracket R will know the command isn't finished and just wait for more input. Note that we're using the $ syntax to refer to individual columns within the arable_sub data frame. 
-We're also creating a factor (f) by which to control the plotting characters, factors are how you deal with categorical variables and they have 'levels' such as factor gender can have levels (m/f/other), treatment(drug/placebo) or size(s/m/l/xl) and many other ways we divide things up into groups. 
-```{r, echo=TRUE}
-f <- factor(arable_sub$Crop)
+##### Taster of session 2...
 
-plot(x = arable_sub$Year, y = arable_sub$Area,
-     pch = as.integer(f),
-     cex = 2,
-     xlab = "Year",
-     ylab = "Area (ha)")
+
+```{r, echo=TRUE, eval = F}
+library(magrittr)
+
+ESG_data <- readxl::read_xlsx("ESG_data.xslx") %>%
+  janitor::clean_names() %>%
+  dplyr::select(-c(x2050, x67)) %>%
+  dplyr::filter(country_name == "United Kingdom" | country_name == "Netherlands",
+                indicator_name == "Forest area (% of land area)") %>%
+  tidyr::pivot_longer(cols = c(x1960:ncol(.)), names_to = "year", values_to = "land_area")
+
+ESG_clean <- ESG_data %>%
+  dplyr::filter(is.na(land_area) == F) %>% 
+  dplyr::mutate(year = as.numeric(stringr::str_remove_all(year, "x")))
+
+ggplot2::ggplot(ESG_clean, ggplot2::aes(x = year, y = land_area, color = country_name)) +
+  ggplot2::geom_line()
+
 ```
 
 
