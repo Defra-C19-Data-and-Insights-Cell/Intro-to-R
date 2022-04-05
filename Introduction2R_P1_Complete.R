@@ -27,14 +27,15 @@ library(tidyverse)
 
 ## Load in data using readxl::read_xlsx().
 ## Remember, if your data is in other formats such as .csv we can use other packages, for example readr::read_csv
-ESG_data <- readxl::read_xlsx("./ESG_data.xslx")
+ESG_data <- readxl::read_xlsx("ESG_data.xslx")
 
 
 ## Use janitor::clean_names to clean up our column names in our dataset, this should be a standard process
 ESG_data <- janitor::clean_names(ESG_data)
 
 
-### ~~~~~~ 1.2 - Explore data ~~~~~~ ####
+####~~~~~~~~~~~~~~~~~~~~~ EXPLORE DATA ~~~~~~~~~~~~~~~~~~~~~~~~####
+### ~~~~~~ 1.2 - View data ~~~~~~ ####
 ## Use some different ways to look at your data, investigate your data. 
 
 ## Just use the object name
@@ -120,18 +121,26 @@ help(pivot_longer)
 ESG_tidy <- tidyr::pivot_longer(ESG_filtered, cols = c(x1960:ncol(ESG_filtered)), names_to = "year", values_to = "land_area")
 
 
-####~~~~~~~~~~~~~ 1.5 - CLEANING DATA ~~~~~~~~~~~~~~####
+
+####~~~~~~~~~~~~~ CLEANING DATA ~~~~~~~~~~~~~~####
+### ~~~~~~ 1.5 - Removing / replacing values ~~~~~~ ####
+
 ### Now our data is in a tidy format we want to clean any columns (or variables) to ensure we have values ready to be presented.
 ### Our case with this data we could clean the Indicator name, filter out any NAs, and make sure we ahve all the correct variable types. 
 
 ## Filter out the NAs
 ESG_clean <- dplyr::filter(ESG_tidy, is.na(ESG_tidy$land_area) == F)
 
-## Clean the year column to remove x
-ESG_clean_year_example <- stringr::str_remove_all(ESG_clean$year, "x")
+## If we look at the year column we created earlier by pivoting, we can see it contains x's before the numerics.
+## We want to get rid of these. There are two quick ways. 
+
+## Clean the year column to remove x using str_remove
+ESG_clean_year_example <- stringr::str_remove(ESG_clean$year, "x")
 
 ## Another likely better way to do this is to only keep the numeric characters in a string using a REGEX expression
 ESG_clean$year <- stringr::str_extract(ESG_clean$year, "[[:digit:]]*$")
+
+### ~~~~~~ 1.6 - Data types ~~~~~~ ####
 
 ## Change the data types as we can see Year is a character type, rather than a numeric type
 ESG_clean$year <- as.numeric(ESG_clean$year)

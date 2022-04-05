@@ -2,7 +2,7 @@
 title: "Introduction to R - Session 1"
 author: "Defra R Training Group"
 date: "Spring 2022"
-output: html_document
+output: rmdformats::readthedown
 ---
 
 ```{r setup, include=FALSE}
@@ -188,9 +188,9 @@ Errors mean R cannot continue processing your commands and returns to the comman
 We have been tasked to compare the performance of the ESG indicator, "Forest area (% of land area)" between the UK and Netherlands as part of a data exploration exercise.
 
 
-### Installing and loading packages, reading data into R.
+## Installing and loading packages, reading data into R.
 
-#### 1.1 Install and library packages
+### 1.1 Install and library packages
 As this is the first time we are using R we will need to install our packages. We do this by running the function `install.packages`.
 
 
@@ -208,13 +208,13 @@ A quick side-note on using lists in R... We can pass lists to most functions to 
 install.packages(c("tidyverse", "janitor", "readxl", "readr", "pillar")) ## and so on
 ```
 
-#### Library packages
+### Library packages
 
 > "a package is a like a book, a library is like a library; you use library() to check a package out of the library" - Hadley Wickham
 
 We need to library our packages in order to use their contents.
 
-```{r, message=T, eval=F}
+```{r, message=T, eval=T}
 library(tidyverse)
 library(janitor) 
 library(readxl)
@@ -239,8 +239,8 @@ ESG_data <- readxl::read_xlsx("./ESG_data.xslx")
 ESG_data
 ```
 
-
-### 1.2 Exploring your data
+## Explore Data 
+### 1.2 - View data
 
 There are various different ways to look at your data in R, try each of these and look at the differences between them. 
 
@@ -275,11 +275,11 @@ unique(ESG_data$`Country Name`)
 When we load data into R it takes the column names in the raw data format. Usually for programming we want to standarise this as one of our first cleaning steps. When naming columns yourself it's best to stick to upper or lower case characters, numbers (but not at the beginning of the name), the underscore and dot characters (_ and .). With this dataset, we will sort out these issues later.
 
 
-### Wrangling data
+## Wrangling data
 
 Data wrangling is about getting your data in the right format to be able to analyse it. The next few steps take you through common data wrangling problems and how you can solve them in R. 
 
-#### 1.3 Deleting rows and columns 
+### 1.3 Deleting rows and columns 
 
 Firstly we are going to standardise our column names using a function from the `janitor` package called `clean_names`. This converts all of our column names to lower case and any spaces to "_".
 
@@ -287,7 +287,7 @@ Firstly we are going to standardise our column names using a function from the `
 colnames(ESG_data) ## before
 ```
 
-```{r, eval = F}
+```{r, eval = T}
 ESG_data <- janitor::clean_names(ESG_data) 
 ```
 
@@ -297,7 +297,7 @@ colnames(ESG_data) ## after
 
 Now we can experiment with removing columns and rows. In base R we can do this using the `[]` format. A square bracket written directly after your data = [row, column]. For example I want to see the 2nd row and the 4th column of my data x I would do the following `x[2,4]`. We can remove values by putting a `-` before the reference. A blank space is ignored.
 
-```{r, eval = F}
+```{r, eval = T}
 ## delete rows
 ESG_data_cleaning <- ESG_data[-1, ] #square bracket = [row, column]
 ESG_data_cleaning # view the data and we can see the first total row is gone
@@ -324,7 +324,7 @@ Indicators = 	Forest area (% of land area).
 
 `read_xlsx` was our first R function, but this is our first example of using an R function with multiple arguments (arguments are just anything within the brackets of the function name. Each argument other than the first is named, using the syntax argument = value. 
 We are going to be passing two arguments to `dplyr::filter`. Here is the completed code:
-```{r, eval = F}
+```{r, eval = T}
 ## Filter country column first, call this variable ESG_filtered using the original data
 ESG_filtered <- dplyr::filter(ESG_data, country_name == "United Kingdom" | country_name ==  "Netherlands") ## like in excel we can use the OR operator.
 unique(ESG_filtered$country_name)
@@ -336,7 +336,7 @@ unique(ESG_filtered$country_name)
 
 Anyone using R, however experienced, is not going to remember the arguments of most of the functions they use. Fortunately it's easy to bring up a help page for any R function:
 
-```{r eval = FALSE}
+```{r eval = T}
 ?dplyr::filter
 # or
 help(filter) # and select the dplyr option
@@ -348,7 +348,7 @@ You will see information appear in the "help" tab in the bottom right tab in R S
 
 Now, with the above in mind, lets filter our data.
 
-```{r , eval = F}
+```{r , eval = T}
 ## Filter country column first, call this variable ESG_filtered using the original data
 ESG_filtered <- dplyr::filter(ESG_data, country_name == "United Kingdom" | country_name == "Netherlands") ## like in excel we can use the OR operator.
 unique(ESG_filtered$country_name)
@@ -363,7 +363,7 @@ colnames(ESG_filtered)
 
 There is a "x67" column and a "x2050" which aren't useful to us in this dataset, so we will get rid of them. We will use -c here to denote we want to select everything BUT the columns listed.
 
-```{r , eval = F}
+```{r , eval = T}
 ESG_filtered <- dplyr::select(ESG_filtered, -c(x2050, x67))
 
 colnames(ESG_filtered)
@@ -395,7 +395,7 @@ We use the pivot_longer() function from the tidyr package here to make our data 
 
 We are going to use a new way of telling R what columns to pivot. In our dataset we want to pivot all of the year columns, so we have told our function `pivot_longer` that `cols = c(x1960:x2019)`. We are using the `c()` operator to select all columns between `x1960` and `x2019` using the `:` operator. 
 
-```{r , eval = F}
+```{r , eval = T}
 ESG_tidy <- tidyr::pivot_longer(ESG_filtered, cols = c(x1960:x2020), 
                                 names_to = "year", 
                                 values_to = "land_area")
@@ -409,14 +409,14 @@ We create a new data frame called ESG_tidy. You'll see that the output of pivot_
 In this example we have used a function from a package. In many cases, packages add functionality that is simply not present in base R. This is one of many cases where we COULD have used a function in base R (in this case that's called reshape). However in this case we use pivot_longer because it's so much easier to use than reshape. We will come across other situations in Session 2 where we choose to use functions in packages rather than their base R equivalents.
 
 
-
-### 1.5 Clean data
+## Cleaning data
+### 1.5 Removing values
 
 Data cleaning is the process of preparing data for analysis by removing or modifying data that is incorrect, incomplete, irrelevant, duplicated, or improperly formatted data. 
 
-#### Remove NAs
+### Remove NAs
 Actually we don't want the NAs at all, so we need to remove these but before doing that it's worth checking where the NAs are. Our first line of code does two things, reading from the inside the function is.na() returns a 1 if NA is found and 0 otherwise. The colSums() function is wrapped around is.na() and adds up the 1s so we can clearly see where the NAs occur. This is good practice because running the next line of code removes all NAs from the dataframe which in this instance is ok. In datasets with more columns you may have NAs in other columns but not on the same rows so applying na.omit() to a dataset may give unwelcome results. There are other functions that allow you to be more selective with handling NAs but that is outside this session.
-```{r , eval = F}
+```{r , eval = T}
 colSums(is.na(ESG_tidy))
 ESG_clean <- na.omit(ESG_tidy)
 
@@ -425,21 +425,21 @@ ESG_clean <- dplyr::filter(ESG_tidy, is.na(ESG_tidy$land_area) == F) # we filter
 
 ```
 
-#### Removing unwanted characters
+### Removing unwanted characters
 If we take a look at the `year` column we just made by pivoting our data we will see that it contains "x" then a year. We want to remove the x to create a numeric year column. 
 
 We can focus our removing of the "x" values by using a function from the package `stringr::str_remove`. This uses the sytax of "string" (where do you want to remove a pattern from), and "pattern" (what do you want to remove).
 
-```{r , eval = F}
+```{r , eval = T}
 ESG_clean$year
 ```
-```{r , eval = F}
+```{r , eval = T}
 stringr::str_remove(ESG_clean$year, "x")
 ```
 
 Given that we know the `year` column only wants to be numbers we could do a more general cleaning incase any spaces or other characters have crept in, we can do this using a bit of "regular expression" (regex) and another function from the `stringr` package, `stringr::str_extract` to extract all the numeric characters from the column, removing everything else.
 
-```{r , eval = F}
+```{r , eval = T}
 ESG_clean$year <- stringr::str_extract(ESG_clean$year, "[[:digit:]]*$")
 ESG_clean
 ```
@@ -448,7 +448,7 @@ This function again uses the same syntax as the `stringr::str_remove` but instea
 
 Don't worry about regular expressions/regex yet though, even for experienced R users regular expressions can be tricky but they are very powerful when dealing with text based datasets that you may encounter at some point. The above example is a simple introduction to what we can do with regex. 
 
-#### Data types
+### 1.6 Data types
 
 R has a wide variety of data types including scalars (a single piece of data), vectors - a series of data of the same type (numerical, character, logical), matrices, data frames, and lists. 
 
@@ -461,7 +461,7 @@ Sometimes when we change a character column to numeric any cells containing char
 
 Let's give this a try...
 
-```{r , eval = F}
+```{r , eval = T}
 ESG_clean$year <- as.numeric(ESG_clean$year) # Make year an integer
 ESG_clean$land_area <- as.numeric(ESG_clean$land_area) # Make area numeric
 ```
@@ -469,22 +469,22 @@ ESG_clean$land_area <- as.numeric(ESG_clean$land_area) # Make area numeric
 
 And with all the above steps done we should have a nice clean dataset with which we are ready to work on some analysis and visualisation.
 
-```{r , eval = F}
+```{r , eval = T}
 ESG_clean
 ```
 
-### Summary of learning
+## Summary of learning
 
 Through this session we have explored (at a very high level)..
 * What R is and why we would use it
 
 
-## End of Session 1!
+### End of Session 1!
 
-##### Taster of session 2...
+#### Taster of session 2...
 
 
-```{r, echo=TRUE, eval = F}
+```{r, echo=TRUE, eval = T}
 library(magrittr)
 
 ESG_data <- readxl::read_xlsx("ESG_data.xslx") %>%
