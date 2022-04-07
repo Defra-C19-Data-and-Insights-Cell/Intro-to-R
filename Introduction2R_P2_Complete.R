@@ -2,6 +2,12 @@
 ## Date: 08/02/2021
 ## Author: Alex Mitchell
 
+####~~~~~~~~~~~~~ Project Brief ~~~~~~~~~~~~~~####
+## We have been tasked to compare the performance of and ESG indicator, "Agriculture, forestry, and fishing, value added (% of GDP)",
+## between chosen countries, Thailand, Indonesia, and the United Kingdom. We also need to graphically present our results over time
+## and for the most recent year.
+
+
 ####~~~~~~~~~~~~~ Loading data ~~~~~~~~~~~~~~####
 ## SessionInfo() can show us all of the packages that we have currently loaded into our invironment
 sessionInfo()

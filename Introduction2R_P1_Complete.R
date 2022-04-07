@@ -4,8 +4,8 @@
 
 ##  ~~~~~~~~~~~~ Project Brief ~~~~~~~~~~~~ ##
 
-## We have been tasked to compare the performance of ESG indicators, "People using safely managed drinking water services (% of population)"                                    
-## and "People using safely managed sanitation services (% of population)" between chosen countries, Zimbabwe and Malawi.
+## We have been tasked to compare the performance of ESG indicator, "Forest area (% of land area)", 
+## between two chosen countries, the Netherlands and the United Kingdom.
 
 
 ####~~~~~~~~~~~~~ Loading data ~~~~~~~~~~~~~~####

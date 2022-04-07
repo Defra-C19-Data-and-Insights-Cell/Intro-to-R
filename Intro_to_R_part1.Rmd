@@ -476,7 +476,19 @@ ESG_clean
 ## Summary of learning
 
 Through this session we have explored (at a very high level)..
-* What R is and why we would use it
+* What is R and R Studio?
+* Installing and using R Packages
+* Reading in and filtering data
+* Reformatting data and basic data cleaning
+* An introduction to next session
+
+Next week we will be covering...
+* Writing code using pipes - %>%
+* Using If / If Else statements
+* Joining different datasets together
+* Visualisation with ggplot2
+* Editing visualisations
+* Exporting graphs and datasets
 
 
 ### End of Session 1!

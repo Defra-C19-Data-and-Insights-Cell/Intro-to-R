@@ -1,8 +1,8 @@
 ---
-title: "Introduction to R - Session 2"
+title: "Introduction to R - Session 1"
 author: "Defra R Training Group"
-date: "Spring 2021"
-output: html_document
+date: "Spring 2022"
+output: rmdformats::readthedown
 ---
 
 ```{r setup, include=FALSE}
@@ -13,23 +13,16 @@ knitr::opts_chunk$set(echo = TRUE)
 #setwd("~/shiny/R Training/Intro to R")
 ```
 
-### Recap
-In the first session we covered reading in, manipulating and graphing some data. We mainly used base R functions, but we did introduce a function from an R package: tidyr::pivot_longer. This is because it was alot easier to use than the equivalent base R function (reshape).
+## Recap
+In the first session we learnt how to extend Rs functionality to include additional packages and functions, how to get them in to R and use them. We then went over loading in and exploring our data, identifying what cleaning/wrangling steps needed to be done. We then used tidyverse functions to clean column names, filter our data, replace values, pivot and change data types. We finished with a cleaned dataset that would be ready for further analysis.
 
-#### In this session we'll cover:
-* installing and loading more packages from the tidyverse to make our life easier
-* Reading in and saving different file formats 
-* Chains of data manipulation: piping  
-* Combining dataframes using joins
-* Plotting using the ggplot2 package
-
-## Recap about RStudio projects 
-We strongly advise working in RStudio projects when using R and we touched on things to avoid in Intro to R Session 1. Let's remind ourselves of the benefits of projects:
-
-* all code, data and outputs are in one place, you should rarely need to hard-code file locations unless you're working with shared data files;
-* this makes your work reproducible for future you and colleagues;
-
-Remember that projects are a RStudio thing, so if you're using R outside of RStudio then you can't make use of them.
+## In this session we'll cover
+* Writing code using pipes - %>%
+* Using If / If Else statements
+* Joining different datasets together
+* Visualisation with ggplot2
+* Editing visualisations
+* Exporting graphs and datasets
 
 ## Let's get started
 
@@ -37,20 +30,14 @@ Presuming you were using RStudio Cloud for Session 1, just log into RStudio Clou
 
 ## Install packages and start a new script
 
-![](packages.jpg)
 
 We need to install some new packages which we didn't install in session 1. Once they're installed they're available any time we come back to our project. In our script we then use the library command to load the packages we need for our current R session.
 
-We'll generally be using the tidyverse functions in this session, we'll compare them with their base R equivalents (where they exist). The tidyverse is a rare example of an enhancement which is both more powerful AND easier to use.
-
-When we introduce a function from a package, we'll use the notation `package::function` to remind us where the function comes from. This notation can also be used in an R script, some would argue it's always good practice as it avoids confusion caused when two loaded packages use different functions with the same name. Here we don't have that issue but it's something to be aware of.
 
 ```{r, eval=FALSE}
 # These are just needed once for this project
 # Just type these commands into the R command line or into an empty script and then run it
 install.packages("ggplot2")
-install.packages("ggthemes")
-install.packages("readxl")
 install.packages("writexl")
 ```
 
@@ -58,203 +45,150 @@ Now create a new R script in RStudio (File|New File|R Script), and immediately s
 
 ```{r}
 # Libraries
-library(dplyr) # note no use of " " when using library command 
+library(dplyr) 
 library(readr)
+library(janitor)
 library(readxl)
 library(ggplot2)
-library(ggthemes)
 library(writexl)
 ```
 
-We could install the tidyverse "meta-package" which includes dplyr, ggplot2 and a whole lot more, but generally it is better practice to install just what we need.
 
+## Read in our data
 
-## Reading in data 
+The `readxl::read_excel()` function can be used to read in both .xls and .xlsx file types.
 
-You can use different functions to read in data from different file types. 
+`read_excel()`/`read_xlsx` (and `writexl::write_excel()`) focus on the simplest cases that users will need for 95% of the time: reading and writing rectangular datasets. There are other more complex R packages for interacting with Excel, for example reading individual cells or ranges, or creating excel files with complex formatting.
 
-* note the need to include the different extensions in the filenames
-* note the 'skip' argument allows you to skip rows, in this case we don't need to skip any. 
-* Other useful arguments e.g. 'range' and 'trim_ws' are available.
-
-![](excel-and-csv.jpg)
-
-### Read in a csv file
-We will use the `readxl::read_csv()` function. The arguments are identical to calling base R read.csv(), but it's a different function. It's better for larger datasets and a bit more customisable. Remeber that we assign ('<-') the results to an R object, otherwise the data would be read in but lost. In passing, we're reminded of the choices on data types that read_csv made.
-
-We then use `dplyr::glimpse()`, this gives us a neat summary of the data and repeats the information on data types such as chr for characters and dbl for decimal numbers. Just calling arable_csv tells us this is a tibble (a special and handier form of data frame) with 36 rows and 5 columns. One advantage of a tibble is that R tries to be clever when it shows you its contents, it only prints the first 10 rows and it will show as many columns as your screen width allows and then summarises the rest underneath. This is generally OK so long as your most important data columns are at the start of your dataframe. 
-
-```{r}
-arable_csv <- read_csv("june_survey_data_clean.csv")
-glimpse(arable_csv)
-arable_csv
-```
-
-Question: from Session 1 do you remember other ways of viewing the contents of a dataframe? 
-
-### Read in .xls and read in .xlsx files
-The `readxl::read_excel()` function can be used to read in both .xls and .xlsx file types. This is our first example of a function where there is simply no way of achieving the same result in base R. 
-
-Note that we have specified which sheets in the workbook we want to read in, in this instance we didn't need this argument because there is only one sheet. We recommend using the sheet argument just in case someone adds new sheets to your spreadsheet. 
-Using View() on each of these tibbles will allow you to compare the two files in the viewer.
-```{r} 
-# read in .xlsx file
-arable <- read_excel("june_survey_data_clean.xlsx", sheet = "june_survey_data_clean")
-```
-
-`read_excel()` (and `writexl::write_excel()`) focus on the simplest cases that users will need for 95% of the time: reading and writing rectangular datasets. There are other more complex R packages for interacting with Excel, for example reading individual cells or ranges, or creating excel files with complex formatting.
-
-### Other file formats
 R can read a vast number of other file formats, and also link directly to databases. R packages to investigate include foreign and haven. See the [R data import manual](https://cran.r-project.org/doc/manuals/R-data.pdf) and the [cran task view on databases](https://cran.r-project.org/web/views/Databases.html)
 
-## Using pipes
-![](pipe.jpg)
+With the `read_xl::read_excel` function we could specify which sheets in the workbook we want to read in, in this instance we didn't need this argument because there is only one sheet. Generally, it is best practice to include the sheets argument as if another sheet is added in the future our code won't break (if there is more than one sheet and we don't give R the `sheet` argument it will not know which sheet to read in and give us an error).
 
-The pipe, `%>%` is a powerful tool for joining (or piping) together multiple operations. It allows you to perform several actions sequentially on a dataframe or tibble. Generally when using tidyverse packages it's automatically available to you. 
+```{r} 
+# read in .xlsx file
+ESG_data <- readxl::read_excel("./ESG_data.xslx", sheet = "Sheet1")
+```
+
+Last session we used a function `janitor::clean_names` to clean the names of our dataset after we imported it into R. We will do the same thing again here, but instead of naming two objects, can we condense reading in data and cleaning the object names together?
+
+## Using pipes
+![](images_markdown/pipe_logo.png)
+
+The pipe, `%>%` is a powerful tool for joining (or piping) together multiple operations. It allows you to perform several actions sequentially on a dataframe or tibble. Generally when using tidyverse packages it's automatically available to you. From `R for Data Science` -> *Pipes are a powerful tool for clearly expressing a sequence of multiple operations*.
 
 __KEYBOARD SHORTCUT__ Ctrl and shift and m (press Ctrl and shift and m together). This will produce the pipe correctly for you and save typing time.
 
- Placing a pipe between actions tells R to:
-Carryout action 1 (e.g. filter the data) %>% then take the result and do action 2 (e.g. create another column) %>% then take this result to action 3 (e.g. multiply values in the new column by values from another column) and so on. We could achieve all of this in base R, but it would involve applying functions to functions and the placement of brackets can get confusing, especially when learning R. 
+Placing a pipe between actions tells R to:
+Carryout action 1 (e.g. filter the data) %>% then take the result and do action 2 (e.g. create another column) %>% then take this result to action 3 (e.g. multiply values in the new column by values from another column) and so on. 
 
 It's our opinion that piping is best practice for coding in R, we  recommend adopting the 'tidyverse' style of coding as part of your own workflow in R, and using tidyverse functions even when base R equivalents are available. This is mainly because it makes your code easier to read and debug - this helps you and anyone else using your code.
 
 You will start to see this in action as we work through the following.
 
-You can learn more about piping in R [here.](https://www.datacamp.com/community/tutorials/pipe-r-tutorial)
+You can learn more about piping in R [here.](https://r4ds.had.co.nz/pipes.html)
 
-### Filter arable to just the areas of wheat
-Here we're going to use the pipe operator to filter the arable dataset, creating a new dataset (arable_wheat). Interpret the code below as:
-Assign the following to arable_wheat; take arable then filter to return crops that are wheat.
+In action: 
 
-Note that when we testing if two things are equals we use the `==` double equals. This is different from single equals `=` which is used for setting arguments in functions, and assign `<-` - take the second object and put a copy into the first. This distinction can initially be confusing, especially if you've experience of other programming languages.
+Let's combine our reading in of data and cleaning of our object variable names in one step.
 
 ```{r}
-arable_wheat <- arable %>% filter(Arable_crop == "wheat")
+ESG_data <- readxl::read_excel("./ESG_data.xslx", sheet = "Sheet1") %>% 
+  janitor::clean_names()
 ```
 
-### Filter arable to just the areas of wheat then remove the first column
-Here we're doing the same again but this time using the pipe operator to also remove the first column called ...1. Use View(arable) to take a look before we do this. Assign the following to arable_wheat_clean; take arable then filter to return crops that are wheat then remove column named ...1 (read_excel gave this column a name because it didn't have one in the spreadsheet)
+Notice that I did not have to specify what to run `janitor::clean_names` on (there is nothing in the brackets). This is becasue a `%>%` takes the output from action 1 in the sequence and passes it directly to action 2, meaning R already knows what object to run the function on.
 
-Note that here we have broken up the sequence onto multiple lines. This is just to make things easier to read. 
+## Filter and wrangle data using lessons from last session 
+Here we're going to use the pipe operator to conduct some our basic cleaning and wrangling steps from last week. We will:
+* Filter data using the `|` operator to signify "OR"
+* Select our columns of interest
+* Pivot data
+
 ```{r}
-arable_wheat_clean <- arable %>%
-  filter(Arable_crop == "wheat") %>%
-  select(-...1)
+ESG_tidy <- ESG_data %>% 
+  dplyr::filter(country_name == "Indonesia" | country_name == "Thailand" | country_name == "United Kingdom") %>% 
+  dplyr::filter(indicator_name == "Agriculture, forestry, and fishing, value added (% of GDP)") %>% 
+  dplyr::select(-c(x2050, x67)) %>% 
+  tidyr::pivot_longer(cols = c(x1960:x2020), names_to = "year", values_to = "agri_forest_fishing_percent_GDP")
 ```
 
-You could also say
+Translated to English, in the above we have taken our ESG data and we have filtered it for countries of interest. We have taken the output of that and then filtered for our indicator of choice. Then, we have dropped columns we are not interested in from our dataset `-c(x2050, x67)`, and then pivoted all of our "year" columns the column names becoming a `year` column and values becoming the `agri_forest_fishing_percent_GDP` column.
 
-```{r eval = FALSE}
-arable_wheat_clean <- arable %>%
-  filter(Arable_crop == "wheat") %>%
-  select(-1) # remove the first column
+
+
+## Clean data using lessons from last session
+Again, remembering from last session we are removing our "x" values from the `year` column of our dataset, and then changing the data types.
+
+```{r}
+ESG_clean <- ESG_tidy %>% 
+  dplyr::mutate(year = stringr::str_remove(year, "x")) %>%
+  dplyr::mutate(year = as.numeric(year)) %>%
+  dplyr::select(-c(indicator_name, indicator_code))
 ```
 
+You will notice above we have introduced a new function `mutate` which comes from the `dplyr` package. This function is necessary when you want to alter or create a new column within a `%>%` sequence. We call see all I have done is told R that `year` now equals stringr::str_remove(year, "x"). This would be the same as `ESG_clean$year <- stringr::str_remove(year, "x"))`.
 
-### Joining datasets to create a new dataset
 
-There are many different ways to join datasets in R, depending on what you are trying to achieve with your join. Base R has a function called merge which can achieve various types of join. However we're going to skip straight to the tidyverse - within the dplyr package there are a number of join functions that enable you to create a new dataset from the whole or parts of other datasets joined together. We are going to the left_join() function from the join family, type ?left_join in your R console and look at the  help file and you'll see the join choices available with some worked examples. You can read more about all of the types of join and how to use them  [here.](https://dplyr.tidyverse.org/reference/join.html)
+## Joining datasets to create a new dataset
+
+There are many different ways to join datasets in R, depending on what you are trying to achieve with your join. Base R has a function called merge which can achieve various types of join. However we're going to skip straight to the tidyverse - within the dplyr package there are a number of join functions that enable you to create a new dataset from the whole or parts of other datasets joined together. We are going to the left_join() function from the join family, type ?left_join in your R console and look at the  help file and you'll see the join choices available with some worked examples. 
+
+You can read more about all of the types of join and how to use them  [here.](https://dplyr.tidyverse.org/reference/join.html)
+
 The [data wrangling cheatsheet](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) is also a useful to look at when choosing which join function to use.
 
-A left join takes all the values from the first table, and looks for matches in the second table based upon one or more a unique identifiers or keys that are common in both tables. If it finds a match, it joins the data from the second table to the first table. If no matches exist then R adds missing values labeled NA. The figure below shows two tables, A and B, the left_join() code to join them and the resulting table. Note that in this example the tables only share two colours in their id columns; red and yellow. The value 2 column is added to table A and the colour that shares a common id is placed in the correct row. Where there were no id matches then a blank cell results, in a real data example this would be NA. Can you think how this example might look different if we called right_join(A, B, by = "id")? 
+A left join takes all the values from the first table, and looks for matches in the second table based upon one or more a unique identifiers or keys that are common in both tables. If it finds a match, it joins the data from the second table to the first table. If no matches exist then R adds missing values labeled NA. 
 
-![How left_join works](left-join.jpg)
+The figure below shows two tables, 1 and 2, the left_join() and the resulting table after a left join. Can you think how this example might look
+different if we called right_join(A, B, by = "id")? 
+
+![Different joins and how they work](images_markdown/Joins-in-SQL-Inner-Outer-Left-and-Right-Join.jpg)
+
+![A visual representation from a dataframe](images_markdown/leftjoin_example.png)
+
 
 __Creating a new dataframe__
-Here we are creating a new dataframe which we will combine with our arable dataframe. Usually you would import a dataset into a dataframe from a file but for this example we will create a small one ourselves.
+We have a data set to import which includes some additional data we want to join to our `ESG_tidy` dataframe.
+
 ```{r}
-prices <- data.frame("Arable_crop" = c("wheat", "barley"), "Price" = c(3,5))
+ESG_emissions <- readxl::read_xlsx("ESG_C02_emissions.xlsx")
 ```
 
 __Combine the new prices dataframe with the arable dataframe using the left_join() function__
 ```{r}
-arable_inc_prices <- left_join(arable, prices, by = "Arable_crop")
-# Note that in this case the by = argument is note technically necessary but it is good practice
-#Or using the pipe operator to achieve the same result
-arable_inc_prices_piped <- arable %>% 
-  left_join(prices, by = "Arable_crop")
-#compare the two dataframes
-#That pesky ...1 column is still in there, can you extend the code to include a pipe and a select() function?
+## lets view the data to see what columns we will have to match
+ESG_clean
+ESG_emissions
 ```
 
-## Data types
-
-R has a wide variety of data types including scalars, vectors (numerical, character, date, date+time, logical, factor) and matrices. It then has compound objects, for example data frames are rectangular and like a matrix but each column has a name and can be a specific data type. Lists are a very flexible container for data (actually data frames are a special type of list). Finally outside of the base R world, there are more types, as we've seen tibbles are an enhancement of data frames which come from the tidyverse. 
-
-R will automatically set data types when you read data into R, however, sometimes you may need to change this depending on your analysis.
-Data types determine how the data is stored in your computer and how analysis/visualization will treat variables. You can read more about data types in R [here.](https://www.statmethods.net/input/datatypes.html)
-
-### Checking data types
-Look at the structure of the dataframe currently using the glimpse() function. 
-```{r}
-glimpse(arable_inc_prices)
-```
-
-Look at how the AreaM column prints, numbers so nothing unusual there.
-```{r}
-arable_inc_prices$AreaM
-```
-Now convert to type character and see how it prints. Note the difference, mainly quotes around the numbers, they are no longer numbers so you cannot do any mathematics with them such as summing the values. Try it, errors are often useful and informative.
+When we view the datasets we can see that we dont have a column which identifies the rows, so we have a couple of columns to join "by"
 
 ```{r}
-arable_inc_prices <- arable_inc_prices %>%  
-  mutate(AreaM = as.character(arable_inc_prices$AreaM))
-arable_inc_prices$AreaM
+## We will have to join by all columns that match to make sure we match the correct rows (no unique row identifiers)
+ESG_and_emissions <- dplyr::left_join(ESG_clean, ESG_emissions, by = c("country_code", "year", "country_name"))
 
-```
-```{r eval = FALSE}
-sum(arable_inc_prices$AreaM)
-```
+## And we can also do this in a pipe
+ESG_and_emissions <- ESG_clean %>% 
+  dplyr::left_join(ESG_emissions, by = c("country_code", "year", "country_name"))
 
-Column type also affects how a column is sorted.
-
-Convert back to numeric, sum again and also estimate the mean AreaM. 
-
-Here we introduce a new function `dplyr::mutate()`
-```{r}
-arable_inc_prices <- arable_inc_prices %>%  
-  mutate(AreaM = as.numeric(arable_inc_prices$AreaM))
-
-sum(arable_inc_prices$AreaM)
-mean(arable_inc_prices$AreaM)
 ```
 
 ## IF statements
 
 If statements can be very useful. Often, you want to make choices and take action dependent on a certain value.
 
-![if statement operation](r-if.jpg)
+![if statement operation](images_markdown/r-if-else-statement-syntax.png)
 
 The syntax of the R if statement is:
 ```{r, eval= FALSE}
-if (test_expression) {
-statement
-}
-```
-If the test_expression is TRUE, the statement gets executed. But if it is FALSE, nothing happens. Run the code as is with x = 5. Then make x = -5 and see what happens; nothing is returned so not very useful as it stands. 
-```{r}
-x <- 5
-if(x > 0){
-print("Positive number")
-}
-```
-### IF else
-
-The if...else statement is often more useful. 
-
-![if statement operation](if-else.jpg)
-
-The syntax of if…else statement is:
-
-```{r, eval = FALSE}
 if (test_expression) {
 statement1
 } else {
 statement2
 }
 ```
-The else part is only evaluated when the if test_expression is FALSE.
+
+If the `test_expression` is `TRUE`, the statement gets executed. But if it is `FALSE`, the `else` statement is executed.
 
 ```{r}
 x <- -5
@@ -265,51 +199,83 @@ print("Positive number")
 print("Negative number")
 }
 ```
+
 Note: that else must be in the same line as the closing braces of the if statement.
 
-### Using ifelse on our arable_inc_prices dataframe
+### What if we want to test a list of numbers and return whether each of them is true or false?
 
-Here we combine a dplyr pipe with the `ifelse()` function, which is a handy short version of `if(){}else{}`. 
+Well lets assign `x` to a list of numbers and try to run our code again.
 
 ```{r}
-arable_inc_prices <- arable_inc_prices %>% mutate(after_2012 = ifelse(Year > 2012, TRUE, FALSE))
+x <- c(-5,-4,-3,-2)
+
+if ( x > 0) {
+print("Positive number")
+} else {
+print("Negative number")
+}
+```
+We get an error. In simple terms this is because `if` and `else` in the above format can only test one statement at a time, when we provide this list to the `if` statement R does not know how to run it. To get around this we can use a function called `ifelse` which functions in exactly the same way as the above but has a slightly different syntax.
+
+```{r}
+x <- c(-5,4,3,-2)
+
+?ifelse
+
+ifelse(x > 0, "Positive Number", "Negative Number") 
+```
+You can see we return a vector of responses, each the result of a value from the list x being run through the ifelse function. Let's use this in a real world example.
+
+## Using ifelse on data
+
+Here we combine a dplyr pipe with the `ifelse()` function, which is a handy short version of `if(){}else{}`. We are going to assign a continent to our countries.
+
+```{r}
+ESG_and_emissions <- ESG_and_emissions %>% 
+  dplyr::mutate(continent = ifelse(ESG_and_emissions$country_name == "United Kingdom", "Europe", "Asia"))
+unique(ESG_and_emissions$continent)
 ```
 
-Question: could you write this in base R? 
+Now we can see we have a continent column in our dataset.
 
-```{r eval = FALSE}
-arable_inc_prices$after_2012 <- ifelse(Arable$inc_prices$Year > 2012, TRUE, FALSE))
+As a bonus piece of knowledge, there is also a function in tidyverse which, when creating complex `ifelse` statements, can be easier to interpret. We can use the function `dplyr::case_when`.
+
+```{r}
+ESG <- ESG_and_emissions %>% 
+  dplyr::mutate(
+    continent = dplyr::case_when(
+      country_name == "United Kingdom" ~ "Europe",
+      country_name != "United Kingdom" ~ "Asia"
+    )
+  )
 ```
 
-### Summary of data manipulation
+## Summary of data manipulation
 
-In the last simple example it's debatable whether the pipe + `dplyr::mutate` sequence is any better / easier. But for more complex sequences of manipulation, pipe + dplyr is generally simpler and more powerful. It also translates seamlessly to the situation where your data are in a database, there is a close relationship between dplyr pipes and underlying SQL code.
+In the above example it's debatable whether the pipe + `dplyr::mutate` sequence is any better / easier than assigning a new column using this sytanx `data$new_column <- statement`. But for more complex sequences of manipulation, pipe + dplyr is generally simpler and more powerful. It also translates seamlessly to the situation where your data are in a database, there is a close relationship between dplyr pipes and underlying SQL code.
 
-We introduced the dplyr verbs:
+Remember the main dplyr verbs:
 
 * `filter` for selecting rows based on one or more conditions
 * `select` for choosing columns by name - keep this or remove that
 * `mutate` for creating new columns (or editing an existing column) based on some criteria.
 
-The last of the main dplyr verbs is `arrange` for sorting data. There's alot more to dplyr which we'll try to cover in future courses.
+The last of the main dplyr verbs, one we haven't used is `arrange` for sorting data. There's alot more to dplyr and the tidyverse, for more info see the tidyverse website or, my favorite resource, the [R for Data Science](https://r4ds.had.co.nz/index.html) book.
 
 ## Exporting dataframes
-Exporting data in R is as easy as importing and you have a wide range of file type options available ranging from the common to exotic. Here we focus on the common file types that most people will deal with on a regular basis.
+Exporting data in R is as easy as importing and you have a wide range of file type options available ranging from the common to exotic. We could export data in the R.data format (small and easily readable by R), but more commonly we would export as a .csv or .xlsx.
 
-### Exporting to a csv file
-When we imported data we used a function called `read_csv()`. To export we use the `readr::write_csv()` function where the first argument is the name of the dataframe to export followed by file = "file name.csv". You need the .csv suffix.
-Note that for training purposes we are exporting our files to the local file area of our project. You can just as easily export to another location that R can access such as a folder on your PC or a network folder.
-```{r, eval=FALSE}
-write_csv(arable_inc_prices, file = "arable_inc_prices.csv") #need to include .csv
-```
-
-### Exporting to an Excel file
-Exporting to Excel is no trickier than exporting to csv. Note that you use `writexl::write_xlsx()`, annoyingly the second argument is path = instead of file = used in `write_csv()` and you need the .xlsx suffix if you want to do anything with the file afterwards.
+Lets use the `write_xl` package to export our data as a `.xlsx` file. And `readr` to export as a .csv
 ```{r}
-write_xlsx(arable_inc_prices, path = "arable_inc_prices.xlsx") # need to include .xlsx
+writexl::write_xlsx(ESG, file = "ESG_clean.xslx") # need to include file extension
+
+readr::write_csv(ESG, file = "ESG_clean.csv")
 ```
+
 
 ## Making graphs
+Now that we have our cleaned data and have exported it to share, we should create some visuals to go along side our data.
+
 One of the many great things about R, and one of it's early identified strengths are its graphical capabilities. These continue to grow as developers release new and updated plotting and also mapping packages and the sky is the limit when it comes to design and level of user interactivity. For now we will focus on the ggplot2 package.
 
 
@@ -321,14 +287,18 @@ Note that the package is called ggplot2, but the most commonly used command in t
 
 ### Basic line graph 
 
-Here we are creating a plot object called arable_p. We take the arable dataframe and pipe this to ggplot(). Within that function we set the "aesthetics" that we want to map aspects of our data on to, in this case Year on the x-axis and AreaM on the y-axis. We also want to map the crop type (Arable_crop) to a colour aesthetic, that is to use colour to represent each crop type. We also want to show the relationship between Year and AreaM as a line by using the `geom_line()` function.. 
+Here we are creating a plot object called esg_line_plot. We take the `ESG` dataframe and pipe this to ggplot(). Within that function we set the "aesthetics" that we want to map aspects of our data on to, in this case Year on the x-axis and AreaM on the y-axis. We also want to map the crop type (Arable_crop) to a colour aesthetic, that is to use colour to represent each crop type. We also want to show the relationship between Year and AreaM as a line by using the `geom_line()` function.. 
 
 ```{r}
-arable_p <- arable %>%
-  ggplot(aes(x = Year, y = AreaM,  colour = Arable_crop)) + 
-  geom_line() 
-arable_p # take a look
+esg_line_plot <- ESG %>% 
+  ggplot(data = ., aes(x = year, y = agri_forest_fishing_percent_GDP, group = country_name, colour = country_name)) + 
+  geom_line()
+
+esg_line_plot
+
 ```
+
+### NEED TO FINISH OFF FROM HERE ###### ^^^^^ CHECK THE ABOVE TEXT
 
 We separate constructing the plot and assigning it to an object from actually viewing it. In the above case on its own that's not really necessary, but we are going to modify the plot object in a minute.
 
