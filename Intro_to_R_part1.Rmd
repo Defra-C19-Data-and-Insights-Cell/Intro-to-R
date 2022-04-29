@@ -22,11 +22,18 @@ knitr::opts_chunk$set(echo = TRUE)
         * Repeatable to other cases
         * Reproducible
         * Easy to maintain
+* Has many uses:
+        * Dashboarding
+        * Automated pipelines
+        * Interactive reporting (RMarkdown)
+        * Great data analysis functions
+        * Great data visualisation functions
 * Longevity: code becomes out of date very very slowly if at all
+* Very active online community who are always innovating uses of R, and can provide support through online forums
 * The breadth of what you can do: pretty much anything with data
 * Web apps (shiny) and automated reporting (RMarkdown)
 * Helpful support community
-* Transferable skill for life
+* Transferable skill
 * Productivity - reproducible and **automatable** pipelines can lead to more time being spent on other areas
 
 
@@ -50,8 +57,10 @@ When you're working through the materials, we recommend that you type the comman
 
 **3) Created a new project by clicking on the 'New Project' button, and given your project a name**
 
+![](images_markdown/rcloud_newproject.png)
 
-Note that in RStudio Cloud you must work in a project. 
+
+*Note that in RStudio Cloud you must work in a project.*
 
 RStudio projects make it straightforward to divide your work into multiple contexts, each with their own working directory, workspace, history, and source documents. On RStudio Desktop you don't have to work in projects but WE STRONGLY RECOMMEND THAT YOU DO. You can read more about using Projects [here.](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects) and see here for some more helpful background [here.](https://martinctc.github.io/blog/rstudio-projects-and-working-directories-a-beginner's-guide/)
 
@@ -67,10 +76,12 @@ Likewise previous R users may have come across the attach() function. Again you 
 
 #### What is R?
 R is a computer language and environment for data manipulation, data analysis and graphical display. 
-Importantly R is a free, open source software which means it is accessible to all and is continually  improving. There are other computer languages, notably Python, used in data science, but R is most widely used. Certaintly within Defra the majority of data scientist/analysts will be using R. For more information on R vs Python you can see this article on [towards datascience.](https://towardsdatascience.com/python-vs-r-for-data-science-cf2699dfff4b)
+Importantly R is a free, open source software which means it is accessible to all and is continually  improving. There are other computer languages, notably Python, used in data science, but R is predominantely used due to it's easy to understand syntax and availability of specific data science/science/analytical packages. And certaintly within Defra the majority of data scientist/analysts will be using R. 
+
+For more information on R vs Python you can see this article in [towards datascience.](https://towardsdatascience.com/python-vs-r-for-data-science-cf2699dfff4b)
 
 #### What is RStudio?
-RStudio is an integrated development environment (IDE) for R. It is a user interface for the R programming language making writing and running code much easier and more intuative, as well as providing a host of addins to make your working life easier including: a console, syntax-highlighting editor that supports direct code execution, tools for plotting, history, debugging and workspace management. 
+RStudio is an integrated development environment (IDE) for R. It is a user interface for the R programming language making writing and running code much easier and more intuitive, as well as providing a host of addins to make your working life easier including: a console, syntax-highlighting editor that supports direct code execution (basically, colours your code and allows a user to select code to run on the fly), tools for plotting, history, debugging and workspace management. 
 
 RStudio is available in open source and commercial editions and runs on the desktop (Windows, Mac, and Linux) or in a browser connected to RStudio Server or RStudio Server Pro. 
 ![](images_markdown/rstudio_session_4pane_layout.png)
@@ -100,9 +111,9 @@ You can use # to add notes throughout your script, the # means R knows not to tr
 
 ## Functions and packages
 
-The way that we use R is to write code which utilises functions - functions being actions that we do to an piece of data, or object in R. But where do the functions come from? Packages. 
+The way that we use R is to write code which utilises functions - functions being actions that we do to a piece of data, or object in R. But where do the functions come from? Packages. 
 
-R Packages are collections of functions written and tested and published to an online storage website (repository), the official repository being CRAN. For a package to be published here, it needs to pass several tests that ensure the package is following CRAN policies.
+R Packages are collections of functions written and tested and published to an online storage website (repository), the official repository being CRAN. For a package to be published here, it needs to pass several tests that ensure the package is following CRAN policies. In simple terms - we trust packages that come from CRAN to be reliable. 
 
 ## Types of R programming
 
@@ -113,9 +124,10 @@ Due to R being Open Source many of the packages we can download and use have dif
 Most people who use R now are using a group of packages called [the tidyverse.](https://www.tidyverse.org/) 
 
 ![](images_markdown/tidyverse_website.png)
-The tidyverse is a collection of packages which share common philosophies and are designed to work together. They were introduced to the world by Hadley Wickham (one of the biggest names in R) and mainly support a [tidy data](https://towardsdatascience.com/what-is-tidy-data-d58bb9ad2458) approach to working with data (more on that later). As the packages share syntax, philosophies and are designed to work together, they use making R alot easier and more initiative, and packages are updated frequently with new features meaning that analysts can stay up to date with best practices and emerging methods.
 
-During this introduction we will touch on Base R, but will mainly focus on using the tidyverse. On thing to take away from this is that there **is many different ways of doing the same thing in R**, here we choose to do things the "tidyverse" way. 
+The tidyverse is a collection of packages which share common philosophies and are designed to work together. They were introduced to the world by Hadley Wickham (one of the biggest names in R) and mainly support a [tidy data](https://towardsdatascience.com/what-is-tidy-data-d58bb9ad2458) approach to working with data (more on that later). As the packages share syntax, philosophies and are designed to work together, they use making R alot easier and more intuative, and packages are updated frequently with new features meaning that analysts can stay up to date with best practices and emerging methods.
+
+During this introduction we will touch on Base R, but will mainly focus on using the tidyverse. On thing to take away from this is that there **are many different ways of doing the same thing in R**, here we choose to do things the "tidyverse" way. 
 
 
 ## Installing packages
@@ -127,6 +139,8 @@ You can do this with the install.packages() function. Type this command into the
 ``` {r, eval = FALSE}
 install.packages("tidyverse") 
 ```
+
+Once you run the above you should never have to run it again (unless you uninstall R or delete some package libraries some how...) as the package will now be installed on your machine.
 
 Here we are only going to install a group of packages from called tidyverse. Most of the time today we are going to use the functions built-in to R ("base R").
 
@@ -171,12 +185,11 @@ Common causes of error:
 * wrong number of ()
 * wrong case: pretty much everything in R is case sensitive
 
-<!-- ![](spell_check.jpg) -->
-
 
 ### Warnings
-Warnings are shown when R has encountered a problem processing some part of your commands, but can continue processing the other commands. However, the result might not be what you would expect, so you should
-carefully examine all variables used in the command that triggered the warning.
+Warnings are shown when R has encountered a problem processing some part of your commands, but can continue processing the other commands. However, the result might not be what you would expect, so you should carefully examine all variables used in the command that triggered the warning.
+
+
 
 ### Errors
 Errors mean R cannot continue processing your commands and returns to the command prompt showing a brief description of the error.
@@ -232,7 +245,7 @@ A data frame is an R data structure, basically a rectangular matrix of data wher
 
 The <- symbol is called the assignment operator or just assign, it's just the less than (<) character immediately followed by the minus sign (-). Note the spaces either side of <-, these are not essential but help readability. But there must NOT be a space between < and -. Likewise there must not be a space between read.csv and the open bracket.
 
-__KEYBOARD SHORTCUT__ Alt and - (press Alt and the minus sign together). This will produce the assigment operator correctly for you and save typing time.
+__KEYBOARD SHORTCUT__ Alt and - (press Alt and the minus sign together). This will produce the assignment operator correctly for you and save typing time.
 
 ```{r eval=T, message=TRUE}
 ESG_data <- readxl::read_xlsx("./ESG_data.xslx")
@@ -412,7 +425,7 @@ In this example we have used a function from a package. In many cases, packages 
 ## Cleaning data
 ### 1.5 Removing values
 
-Data cleaning is the process of preparing data for analysis by removing or modifying data that is incorrect, incomplete, irrelevant, duplicated, or improperly formatted data. 
+Data cleaning is the process of preparing data for analysis by removing or modifying data that is incorrect, incomplete, irrelevant, duplicated, or improperly formatted. 
 
 ### Remove NAs
 Actually we don't want the NAs at all, so we need to remove these but before doing that it's worth checking where the NAs are. Our first line of code does two things, reading from the inside the function is.na() returns a 1 if NA is found and 0 otherwise. The colSums() function is wrapped around is.na() and adds up the 1s so we can clearly see where the NAs occur. This is good practice because running the next line of code removes all NAs from the dataframe which in this instance is ok. In datasets with more columns you may have NAs in other columns but not on the same rows so applying na.omit() to a dataset may give unwelcome results. There are other functions that allow you to be more selective with handling NAs but that is outside this session.
@@ -455,7 +468,7 @@ R has a wide variety of data types including scalars (a single piece of data), v
 R will automatically set data types when you read files into R, however, sometimes R will not do what you want so you may need to change.
 Data types determine how the data is stored in your computer and how analysis/visualization will treat variables. You can read more about data types in R [here.](https://www.statmethods.net/input/datatypes.html)
 
-Change variable data types, from character (text) to numeric. Once we pivoted our earlier dataset we created a year column which contained (before we cleaned it) and `x` and then a number like `1993`. is we run our dataframe we can see the datatype of the year column in character, the character strings which were there are why the column was labelled as a character rather than numeric. 
+Change variable data types, from character (text) to numeric. Once we pivoted our earlier dataset we created a year column which contained (before we cleaned it) and `x` and then a number like `1993`. When we run our dataframe (just run `ESG_clean`) we can see the datatype of the year column in character, the character strings which were there are why the column was labeled as a character rather than numeric. Using incorrect datatypes is probably one of the most common errors we get in programming, and will leave you with an error along the lines of `function x expected numerical but received character`. For instance we could pass a date column to a function as a character data type rather than a date type, or as in the example above a year column passed as a character rather than a numeric value.
 
 Sometimes when we change a character column to numeric any cells containing characters will be flagged as NA, and you'll get a message from R that it's done this. This is why (in this case) we want to remove characters before changing the data type. In other cases we might be fine with just changing the datatype and ignoring the NA values, it all depends on what data you are using and the purpose. 
 
