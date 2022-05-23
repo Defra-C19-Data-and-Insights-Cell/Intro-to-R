@@ -22,7 +22,7 @@ library(ggplot2)
 library(writexl)
 library(magrittr)
 
-####~~~~~~~~~~~~~~~~~~~~~~~~DATA CLEANING WITH %>% ~~~~~~~~~~~~~~~~~~~~~~####
+####  ~~~~~~~~~~~~~~~~~~~~ 2.1 DATA CLEANING WITH %>% ~~~~~~~~~~~~~~~~~~~~~ ####
 
 ## Lets experiment with the %>% operator
 ## %>% effectively means "then do this to that object"
@@ -45,7 +45,7 @@ ESG_clean <- ESG_tidy %>%
 
 
 
-####~~~~~~~~~~~~~~~~~~~~~~~~COMBINING DATAFRAMES~~~~~~~~~~~~~~~~~~~~~~####
+#### ~~~~~~~~~~~~~~~~~~~~~~ 2.2 COMBINING DATAFRAMES ~~~~~~~~~~~~~~~~~~~~ ####
 
 ## We have some additional ESG data which gives us emissions for all countries. We want to include this in our dataset.
 
@@ -64,7 +64,7 @@ ESG_and_emissions <- dplyr::left_join(ESG_clean, ESG_emissions, by = c("country_
 
 
 
-####~~~~~~~~~~~~~~~~~~~~~~~~IF/IF ELSE~~~~~~~~~~~~~~~~~~~~~~####
+#### ~~~~~~~~~~~~~~~~~~~~~~ 2.3 IF/IF ELSE ~~~~~~~~~~~~~~~~~~~~ ####
 
 ## Very useful in R, a lot of real world examples, also a couple of different ways to do it...
 
@@ -109,7 +109,7 @@ ESG <- ESG_and_emissions %>%
   )
 
 
-####~~~~~~~~~~~~~~~~~~~~~~~~ EXPORTING DATA ~~~~~~~~~~~~~~~~~~~~~~####
+#### ~~~~~~~~~~~~~~~~~~~~~~ 2.4 EXPORTING DATA ~~~~~~~~~~~~~~~~~~~~~ ####
 
 ## We can write dataframe to many outputs, commonly we use R.Data files, or .csv/.xlsx
 ## To save as csv we need to identify the package (search google or look at installed packages)
@@ -120,7 +120,7 @@ write.csv(ESG, file = "ESG_clean.csv") # need to include file extension
 
 
 
-####~~~~~~~~~~~~~~~~~~~~~~~~ PLOTTING ~~~~~~~~~~~~~~~~~~~~~~####
+#### ~~~~~~~~~~~~~~~~~~~~~~~ 2.5 PLOTTING ~~~~~~~~~~~~~~~~~~~~~ ####
 
 ## Lets create a simple plot using ggplot
 ?ggplot
