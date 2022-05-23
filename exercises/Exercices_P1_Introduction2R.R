@@ -27,15 +27,13 @@ head(crops_data, 5)
 
 ## 1.2 ~~~~~~~~~~~~ Wrangle data ~~~~~~~~~~~~ ##
 
-readr::read_csv("./exercises/june_survey_data_clean.csv")
-
 ## 1. Filter out year 2009 using dplyr::filter and the "not equal to" operator: !=
-crops_filtered <- dplyr::filter(crops, Year != 2009)
+crops_filtered <- dplyr::filter(crops_data, Crop != "total")
 
 ## 2. Using the function tidyr::pivot_longer to pivot all columns other than "Crop"
 ##    names_to should be "Year", values_to should be "Area". Call this "Crops".
 
-crops <- tidyr::pivot_longer(crops_data, -Crop, names_to = "Year", values_to = "Area")
+crops <- tidyr::pivot_longer(crops_filtered, -Crop, names_to = "Year", values_to = "Area")
 
 ## 3. There is a value within the "Year" column called "revised" which we want to replace with "2009"
 ##    Fill in the STRING, PATTERN, and REPLACEMENT in the below code which uses stringr::str_replace. 
@@ -60,11 +58,3 @@ crops_filtered$Area <- as.numeric(arable$Area) # Make area numeric
 ## 5. Remove NAs using the na.omit function.
 arable <- na.omit(arable)
 
-
-## subsetting data
-# similarly can use these: >, <, <=, ==, !=
-arable_sub <- subset(arable, Year >= 2008) 
-
-## filter for multiple values/catagories
-crop_list <- c("wheat", "barley", "oilseed rape")
-arable_sub <- filter(arable_sub, Crop %in% crop_list)
