@@ -62,7 +62,7 @@ With the `read_xl::read_excel` function we could specify which sheets in the wor
 
 ```{r} 
 # read in .xlsx file
-ESG_data <- readxl::read_excel("./ESG_data.xslx", sheet = "Sheet1")
+ESG_data <- readxl::read_excel("../data/ESG_data.xslx", sheet = "Sheet1")
 ```
 
 
@@ -87,7 +87,7 @@ You can learn more about piping in R [here.](https://r4ds.had.co.nz/pipes.html)
 Let's combine our reading in of data and cleaning of our object variable names in one step...
 
 ```{r}
-ESG_data <- readxl::read_excel("./ESG_data.xslx", sheet = "Sheet1") %>% 
+ESG_data <- readxl::read_excel("../data/ESG_data.xslx", sheet = "Sheet1") %>% 
   janitor::clean_names()
 ```
 
@@ -145,7 +145,7 @@ __Creating a new dataframe__
 We have a data set to import which includes some additional data we want to join to our `ESG_tidy` dataframe.
 
 ```{r}
-ESG_emissions <- readxl::read_xlsx("ESG_C02_emissions.xlsx")
+ESG_emissions <- readxl::read_xlsx("../data/ESG_C02_emissions.xlsx")
 ```
 
 __Combine the new prices dataframe with the arable dataframe using the left_join() function__
