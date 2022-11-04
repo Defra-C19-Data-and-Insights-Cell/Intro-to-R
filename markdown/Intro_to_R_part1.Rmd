@@ -57,7 +57,7 @@ When you're working through the materials, we recommend that you type the comman
 
 **3) Created a new project by clicking on the 'New Project' button, and given your project a name**
 
-![](images_markdown/rcloud_newproject.png)
+![](../images_markdown/rcloud_newproject.png)
 
 
 *Note that in RStudio Cloud you must work in a project.*
@@ -72,7 +72,7 @@ Likewise previous R users may have come across the attach() function. Again you 
 
 ## What is R & R Studio?
 
-![](images_markdown/r_rstudio.png)
+![](../images_markdown/r_rstudio.png)
 
 #### What is R?
 R is a computer language and environment for data manipulation, data analysis and graphical display. 
@@ -84,19 +84,19 @@ For more information on R vs Python you can see this article in [towards datasci
 RStudio is an integrated development environment (IDE) for R. It is a user interface for the R programming language making writing and running code much easier and more intuitive, as well as providing a host of addins to make your working life easier including: a console, syntax-highlighting editor that supports direct code execution (basically, colours your code and allows a user to select code to run on the fly), tools for plotting, history, debugging and workspace management. 
 
 RStudio is available in open source and commercial editions and runs on the desktop (Windows, Mac, and Linux) or in a browser connected to RStudio Server or RStudio Server Pro. 
-![](images_markdown/rstudio_session_4pane_layout.png)
+![](../images_markdown/rstudio_session_4pane_layout.png)
 
 ## Getting the training data into RStudio Cloud
 
 Once you have the zip file of training materials, start up RStudio Cloud and go to your new project that you created above. In the bottom right window, under the Files tab, you'll see a button called Upload. Click on that, and follow the instructions to upload your zipped file. RStudio will automatically unzip the files and place them in your project. This includes the training documents themselves, which don't need to be available to R, but it's no harm to have them there. 
 
-![](images_markdown/r_upload.png)
+![](../images_markdown/r_upload.png)
 
 ## Getting set up
 Although we can type R commands into the console window (bottom left - useful for quick code snippets which we don't want to save), it's better to type commands into a script which we can save for future use. From a script we can run an individual line of code, a block of code or the entire script.
 
 To set up a new blank script, click on the little plus sign in the top left of your screen underneath File.
-![](images_markdown/r_new_script.png)
+![](../images_markdown/r_new_script.png)
 
 It's good practice to put a name, a date and author in scripts.
 
@@ -123,7 +123,7 @@ Due to R being Open Source many of the packages we can download and use have dif
 
 Most people who use R now are using a group of packages called [the tidyverse.](https://www.tidyverse.org/) 
 
-![](images_markdown/tidyverse_website.png)
+![](../images_markdown/tidyverse_website.png)
 
 The tidyverse is a collection of packages which share common philosophies and are designed to work together. They were introduced to the world by Hadley Wickham (one of the biggest names in R) and mainly support a [tidy data](https://towardsdatascience.com/what-is-tidy-data-d58bb9ad2458) approach to working with data (more on that later). As the packages share syntax, philosophies and are designed to work together, they use making R alot easier and more intuative, and packages are updated frequently with new features meaning that analysts can stay up to date with best practices and emerging methods.
 
@@ -248,7 +248,7 @@ The <- symbol is called the assignment operator or just assign, it's just the le
 __KEYBOARD SHORTCUT__ Alt and - (press Alt and the minus sign together). This will produce the assignment operator correctly for you and save typing time.
 
 ```{r eval=T, message=TRUE}
-ESG_data <- readxl::read_xlsx("./ESG_data.xslx")
+ESG_data <- readxl::read_xlsx("../data/ESG_data.xslx")
 ESG_data
 ```
 
@@ -357,7 +357,7 @@ help(filter) # and select the dplyr option
 
 You will see information appear in the "help" tab in the bottom right tab in R Studio. 
 
-![](images_markdown/r_help.png)
+![](../images_markdown/r_help.png)
 
 Now, with the above in mind, lets filter our data.
 
@@ -390,7 +390,7 @@ Making a dataset 'tidy' is part of the data wrangling process in R.
 
 Tidy data is a standard way of mapping the meaning of a dataset to its structure. A dataset is messy or tidy depending on how rows, columns and tables are matched up with observations, variables and types. 
 
-![](images_markdown/tidy-1.png)
+![](../images_markdown/tidy-1.png)
 
 There 3 main qualities of tidy data:
 
@@ -512,7 +512,7 @@ Next week we will be covering...
 ```{r, echo=TRUE, eval = T}
 library(magrittr)
 
-ESG_data <- readxl::read_xlsx("ESG_data.xslx") %>%
+ESG_data <- readxl::read_xlsx("../data/ESG_data.xslx") %>%
   janitor::clean_names() %>%
   dplyr::select(-c(x2050, x67)) %>%
   dplyr::filter(country_name == "United Kingdom" | country_name == "Netherlands",

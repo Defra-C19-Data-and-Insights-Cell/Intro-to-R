@@ -70,7 +70,7 @@ ESG_data <- readxl::read_excel("../data/ESG_data.xslx", sheet = "Sheet1")
 
 Last session we used a function `janitor::clean_names` to clean the names of our dataset after we imported it into R. We will do the same thing again here, but instead of naming two objects, can we condense reading in data and cleaning the object names together?
 
-![](images_markdown/pipe_logo.png)
+![](../images_markdown/pipe_logo.png)
 
 The pipe, `%>%`, is a powerful tool for joining (or piping) together multiple operations. It allows you to perform several actions sequentially on a dataframe or tibble. Generally when you have library and loaded a package from tidyverse the pipe syntax will be automatically available to you, but it comes from a package `magrittr`.  A quote describing `%>%` from the `R for Data Science` book -> *Pipes are a powerful tool for clearly expressing a sequence of multiple operations*.
 
@@ -136,9 +136,9 @@ A left join takes all the values from the first table, and looks for matches in 
 The figure below shows two tables, 1 and 2, the left_join() and the resulting table after a left join. Can you think how this example might look
 different if we called right_join(A, B, by = "id")? 
 
-![Different joins and how they work](images_markdown/Joins-in-SQL-Inner-Outer-Left-and-Right-Join.jpg)
+![Different joins and how they work](../images_markdown/Joins-in-SQL-Inner-Outer-Left-and-Right-Join.jpg)
 
-![A visual representation from a dataframe](images_markdown/leftjoin_example.png)
+![A visual representation from a dataframe](../images_markdown/leftjoin_example.png)
 
 
 __Creating a new dataframe__
@@ -174,7 +174,7 @@ We can see that we have now joined the `tC02_per_capita` onto our dataset.
 
 If statements can be very useful. Often, you want to make choices and take action dependent on a certain value.
 
-![if statement operation](images_markdown/r-if-else-statement-syntax.png)
+![if statement operation](../images_markdown/r-if-else-statement-syntax.png)
 
 The syntax of the R if statement is:
 ```{r, eval= FALSE, echo = T}
@@ -203,7 +203,7 @@ Note: that else must be in the same line as the closing braces of the if stateme
 
 Well lets assign `x` to a list of numbers and try to run our code again.
 
-```{r}
+```{r eval=F}
 x <- c(-5,-4,-3,-2)
 
 if ( x > 0) {
@@ -358,7 +358,7 @@ esg_bar_plot2 <- esg_bar_plot +
 
 A simple way to export any graphic is by point and click in RStudio. Click on Export in the Plot viewer pane and you can either copy the graph to the clipboard or save it as an image file. 
 
-![](./images_markdown/export_gg_R.png)
+![](../images_markdown/export_gg_R.png)
 
 But for reproducibility it's probably better to save your graphic as a file directly from your R script. It is better to think proactively about the size you would like your final image to be, as this affects the text size in your plot.
 
